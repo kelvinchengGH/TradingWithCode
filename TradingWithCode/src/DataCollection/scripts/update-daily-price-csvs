@@ -1,0 +1,21 @@
+#!/Library/Frameworks/Python.framework/Versions/3.7/bin/python3
+
+import sys
+sys.path.insert( 0, '../Utils' )
+import RawDataUtil
+
+print( "***** UPDATING DAILY STOCK PRICE DATA *****" )
+
+tickerListPath = 'tickers.txt'
+destDir = '../../../data/RawData/DailyPriceCsvs'
+
+# Read the list of tickers from a file
+with open( tickerListPath, 'r' ) as f:
+   tickers = f.readlines()
+tickers = [ t.strip() for t in tickers ]
+
+for ticker in tickers:
+   dest = destDir + '/%s.csv' % ticker
+   RawDataUtil.getDailyPriceCsv( ticker, dest )
+
+
