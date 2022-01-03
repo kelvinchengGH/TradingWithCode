@@ -1,0 +1,45 @@
+########################################################################
+# A list of metrics you can fetch from Macrotrends.
+# 
+# Exmaple URL:
+#   https://www.macrotrends.net/stocks/charts/JPM/jpmorgan-chase/net-income
+#
+# Note: Using "JPM/jpm" in the URL works just the same as "JPM/jpmorgan-chase".
+#       Looks like Macrotrends designed their site to be
+#       nice to web scrapers like us. :)
+########################################################################
+
+# Revenue & Profit
+revenue
+gross-profit
+operating-income
+ebitda
+net-income
+eps-earnings-per-share-diluted
+shares-outstanding
+
+# Assets & Liabilities
+total-assets
+cash-on-hand
+long-term-debt
+total-liabilities
+total-share-holder-equity
+
+# Margins
+profit-margins
+gross-margin
+operating-margin
+ebitda-margin
+pre-tax-profit-margin
+net-margin
+
+# Price Ratios
+pe-ratio
+ps-ratio
+price-book
+price-fcf
+net-worth
+
+# Cash Flow
+free-cash-flow
+cash-flow-from-operating-activities
