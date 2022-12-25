@@ -1,0 +1,60 @@
+#!/Library/Frameworks/Python.framework/Versions/2.7/bin/python
+
+import sys
+import numpy as np
+import multiprocessing as mp
+sys.path.insert( 0, '../Utils' )
+import RawDataUtil
+import WebScrapingUtil
+
+
+
+tickerListPath = 'tickers.txt'
+csvDestDir = '../../../data/RawData/DailyPriceCsvs'
+jsonDestDir = '../../../data/RawData/YahooFinanceInfo'
+NUM_PROCESSES = 1
+
+
+# If an index adds a stock, we want to fetch that stock's data.
+print "***** UPDATING LIST OF TICKERS *****"
+with open( tickerListPath, 'r' ) as f:
+   tickers = f.readlines()
+tickers = set( [ t.strip() for t in tickers ] )
+tickers = tickers | set( WebScrapingUtil.getSp500List())
+tickers = tickers | set( WebScrapingUtil.getNasdaq100List())
+tickers = tickers | set( WebScrapingUtil.getDowJonesList())
+tickers = sorted( list( tickers ) )
+with open( tickerListPath, 'w' ) as f:
+   for ticker in tickers:
+      f.write( ticker + '\n' )
+
+
+print "***** UPDATING DAILY STOCK PRICE DATA *****"
+
+# Read the list of tickers from a file
+with open( tickerListPath, 'r' ) as f:
+   tickers = f.readlines()
+tickers = [ t.strip() for t in tickers ]
+
+
+def fetchData( tickerList ):
+   for ticker in tickerList:
+      csvDest = csvDestDir + '/%s.csv' % ticker
+      RawDataUtil.getDailyPriceCsvFast( ticker, csvDest )
+      #jsonDest = jsonDestDir + '/%s.json' % ticker
+      #RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
+
+
+partitionedList = np.array_split( np.array( tickers ), NUM_PROCESSES )
+processes = []
+for i in range( NUM_PROCESSES ):
+    subList = list( partitionedList[ i ] )
+    process = mp.Process(
+        target=fetchData,
+        args=( subList, )
+    )
+    processes.append( process )
+    process.start()
+
+for process in processes:
+    process.join()
