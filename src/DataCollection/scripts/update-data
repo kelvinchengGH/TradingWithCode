@@ -16,7 +16,7 @@ NUM_PROCESSES = 1
 
 
 # If an index adds a stock, we want to fetch that stock's data.
-print "***** UPDATING LIST OF TICKERS *****"
+print( "***** UPDATING LIST OF TICKERS *****" )
 with open( tickerListPath, 'r' ) as f:
    tickers = f.readlines()
 tickers = set( [ t.strip() for t in tickers ] )
@@ -29,7 +29,7 @@ with open( tickerListPath, 'w' ) as f:
       f.write( ticker + '\n' )
 
 
-print "***** UPDATING DAILY STOCK PRICE DATA *****"
+print( "***** UPDATING DAILY STOCK PRICE DATA *****" )
 
 # Read the list of tickers from a file
 with open( tickerListPath, 'r' ) as f:
@@ -41,20 +41,22 @@ def fetchData( tickerList ):
    for ticker in tickerList:
       csvDest = csvDestDir + '/%s.csv' % ticker
       RawDataUtil.getDailyPriceCsvFast( ticker, csvDest )
-      #jsonDest = jsonDestDir + '/%s.json' % ticker
-      #RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
+      jsonDest = jsonDestDir + '/%s.json' % ticker
+      RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
 
 
-partitionedList = np.array_split( np.array( tickers ), NUM_PROCESSES )
-processes = []
-for i in range( NUM_PROCESSES ):
-    subList = list( partitionedList[ i ] )
-    process = mp.Process(
-        target=fetchData,
-        args=( subList, )
-    )
-    processes.append( process )
-    process.start()
+# partitionedList = np.array_split( np.array( tickers ), NUM_PROCESSES )
+# processes = []
+# for i in range( NUM_PROCESSES ):
+#     subList = list( partitionedList[ i ] )
+#     process = mp.Process(
+#         target=fetchData,
+#         args=( subList, )
+#     )
+#     processes.append( process )
+#     process.start()
+#
+# for process in processes:
+#     process.join()
 
-for process in processes:
-    process.join()
+fetchData( tickers )

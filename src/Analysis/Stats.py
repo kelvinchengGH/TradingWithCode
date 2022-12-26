@@ -3,38 +3,62 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 import os
+import json
+import datetime
+
+import yfinance as yf
 
 ### Read in data ###
-baseDir = '/Users/kelvincheng/Desktop/Terminal/hard-way/temp/Udacity_ML_for_Stocks/data/DailyPrices/csvs/'
-def symbolToPath( symbol, baseDir=baseDir ):
+csvBaseDir = '../../data/RawData/DailyPriceCsvs/'
+def symbolToCsvPath( symbol, baseDir=csvBaseDir ):
     ''' Return CSV file path for the given ticker symbol. '''
-    return os.path.join(baseDir, "{}-price.csv".format(str(symbol)))
+    return os.path.join(baseDir, "{}.csv".format(str(symbol)))
 
-def getDailyStockPrices( symbols, dates ):
+
+jsonBaseDir = '../../data/RawData/YahooFinanceInfo'
+def symbolToJsonPath( symbol, baseDir=jsonBaseDir ):
+    return os.path.join(baseDir, "{}.json".format(str(symbol)))
+    
+
+def getDailyStockPrices( symbols, dates=None ):
     """
     Read daily price data from the CSV files for each symbol in the list,
     and return a DataFrame with this data.
 
     Paramters:
-    symbols ( list ): List of ticker symbols to gather info on.
-    dates ( DateTimeIndex ): A pandas list of dates to read info for.
+       symbols ( list ): List of ticker symbols to gather info on.
+       dates ( DateTimeIndex ): A pandas list of dates to read info for.
 
     Returns:
-    DataFrame: A table with the daily prices for each symbol in the list.
+       DataFrame: A table with the daily prices for each symbol in the list.
+
+    Example:
+       startDate = '2000-01-01'
+       endDate = datetime.datetime.today().strftime('%Y-%m-%d')
+       dates = pd.date_range( startDate, endDate )
+       symbols = [ 'AAPL', 'MSFT' ]
+       getDailyStockPrices( symbols, dates )
     """    
     # Use the SPY as a reference for which trading days to include.
     dropSpy = False
     if 'SPY' not in symbols:
         dropSpy = True
         symbols.insert( 0, 'SPY' )
+
+    if not dates:
+        startDate = '1900-01-01'
+        endDate = datetime.datetime.today().strftime('%Y-%m-%d')
+        dates = pd.date_range( startDate, endDate )
+
+    df = pd.DataFrame( index=dates )
         
-    df = pd.DataFrame( index=dates )        
     for symbol in symbols:
-        path = symbolToPath( symbol )
+        path = symbolToCsvPath( symbol )
         df_temp = pd.read_csv( path, index_col='Date', parse_dates=True,
-                               usecols=[ 'Date', 'Adj Close' ], na_values=[ 'nan' ] )
-        df_temp = df_temp.rename( columns={ 'Adj Close' : symbol } )
+                               usecols=[ 'Date', 'Close' ], na_values=[ 'nan' ] )
+        df_temp = df_temp.rename( columns={ 'Close' : symbol } )
         df = df.join( df_temp )
         if symbol == 'SPY':  # drop dates SPY did not trade
             df = df.dropna( subset=["SPY"] )
@@ -44,6 +68,11 @@ def getDailyStockPrices( symbols, dates ):
         df = df.drop( [ 'SPY' ], axis=1 )
     return df
 
+
+def getYahooFinanceInfoDict( symbol ):
+    with open( symbolToJsonPath( symbol ), 'r' ) as f:
+        infoDict = json.load( f )
+    return infoDict
 
 ### Plot data ### 
 def plotData( df, title='Stock Prices', xlabel='Date', ylabel='Price' ):
@@ -102,3 +131,34 @@ def stockWithMovingAverages( df, symbol, windows=[ 20, 50, 200 ] ):
         ma = ma.rename( columns={ symbol : '%d-day MA' % window } )
         result = result.join( ma )
     return result
+
+
+
+
+##### One-off stats #####
+def pctChangeFromAllTimeHigh( symbol ):
+    '''
+    Takes the last closing price and calculates the percentage
+    difference from the all-time high.
+    '''
+    df = getDailyStockPrices( [ symbol ] )
+    priceSeries = df[ symbol ]
+    lastClosingPrice = priceSeries[-1]
+    allTimeHigh = priceSeries.max()
+    pctChange = ( lastClosingPrice - allTimeHigh ) / allTimeHigh
+    return pctChange
+
+
+def dividendYield( symbol ):
+    infoDict = getYahooFinanceInfoDict( symbol )
+    return infoDict.dividendYield
+
+
+def forwardPE( symbol ):
+    infoDict = getYahooFinanceInfoDict( symbol )
+    return infoDict.forwardPE
+
+
+def showPctChangeFromAllTimeHigh( symbols ):
+    for symbol in symbols:
+        pass

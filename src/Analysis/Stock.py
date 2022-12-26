@@ -6,8 +6,7 @@
 import os, json
 import pandas as pd
 import yfinance as yf
-from Utils import cachedproperty
-
+from functools import cached_property
 
 ############
 # Constants
@@ -31,15 +30,15 @@ class Stock( object ):
         # Returns the yfTicker's history method
         return self.yfTicker.history
 
-    @cachedproperty
+    @property
     def maxHistoryDf( self ):
         filePath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/%s.csv' % self.ticker
         df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
                           na_values=[ 'nan' ] )
         return df
         # return self.history( period='max' )
-    
-    @cachedproperty
+
+    @property
     def info( self ):
         # Returns the yfTicker's info dict
         # TODO:
@@ -137,7 +136,7 @@ def main():
         data[ 'ForwardPE' ].append( stock.forwardPE )
 
     df = pd.DataFrame( data, index=tickers )
-    print df.round( 2 )
+    print( df.round( 2 ) )
 
 
 if __name__ == '__main__':

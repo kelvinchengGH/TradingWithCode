@@ -24,7 +24,7 @@ Tools for scraping and parsing data from Macrotrends.
 import os, re
 import argparse
 
-import urllib2
+import requests
 from bs4 import BeautifulSoup
 
 import pandas as pd
@@ -62,8 +62,8 @@ def getPageSource( ticker, metric ):
    '''
    tickerStr = "%s/%s" % ( ticker, ticker.lower() )
    url = MACROTRENDS_URL_TEMPLATE % ( tickerStr, metric )
-   page = urllib2.urlopen( url )
-   data = page.read()
+   r = requests.get( url )
+   data = r.text
    return data
 
 def getAnnualData( ticker, metric ):
@@ -138,9 +138,9 @@ def dumpAnnualData( ticker, metric, useCurrencyFormat=False ):
       value = yearToValueMap[ year ]
       if useCurrencyFormat:
          value = "${:,.2f}".format( value )
-         print "%d\t%s" % ( year, value )
+         print( "%d\t%s" % ( year, value ) )
       else:
-         print "%d\t%.2f" % ( year, value )
+         print( "%d\t%.2f" % ( year, value ) )
    
 def getDataFrame( tickers, metrics ):
    '''
@@ -170,7 +170,7 @@ def getDataFrame( tickers, metrics ):
 
       for metric in metrics:
          yearToValueMap = getAnnualData( ticker, metric )
-         for year, value in yearToValueMap.iteritems():
+         for year, value in yearToValueMap.items():
             if year not in yearToDataMap:
                yearToDataMap[ year ] = {}
             yearToDataMap[ year ][ metric ] = value
@@ -205,7 +205,7 @@ if __name__ == '__main__':
    metrics = [ 'net-income',
                'revenue',
                'total-share-holder-equity',
-               # 'free-cash-flow',
+               'free-cash-flow',
                'cash-flow-from-operating-activities',
                'eps-earnings-per-share-diluted'
    ]
@@ -214,16 +214,16 @@ if __name__ == '__main__':
       ticker = ticker.upper()
       for metric in metrics:
          metricWithDashesRemoved = metric.replace( '-', ' ' ).title()
-         print "*** %s Annual %s ***" % ( ticker,
-                                          metricWithDashesRemoved )
+         print( "*** %s Annual %s ***" % ( ticker,
+                                          metricWithDashesRemoved ) )
          try:
             dumpAnnualData( ticker, metric,
                             useCurrencyFormat=args.useCurrencyFormat )
-            print            
+            print()            
          except urllib2.HTTPError as e:
-            print "[ERROR] Failed to get data for %s %s: %s" % \
+            print( "[ERROR] Failed to get data for %s %s: %s" % \
                ( ticker,
                  metricWithDashesRemoved,
-                 str( e ) )
+                 str( e ) ) )
             continue
       print

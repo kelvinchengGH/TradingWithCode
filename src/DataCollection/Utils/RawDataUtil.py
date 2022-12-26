@@ -104,7 +104,7 @@ def getDailyPriceCsvFast( ticker, dest='' ):
       return
 
    if isMostRecentWeekday( lastDateInExistingCsv ):
-      print "Daily price data for %s is already up-to-date" % ticker
+      print( "Daily price data for %s is already up-to-date" % ticker )
       return
 
    # Fetch Yahoo Finance data into a Python DataFrame, starting
