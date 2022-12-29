@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 
 ############
 # Imports
@@ -30,7 +31,7 @@ class Stock( object ):
         # Returns the yfTicker's history method
         return self.yfTicker.history
 
-    @property
+    @cached_property
     def maxHistoryDf( self ):
         filePath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/%s.csv' % self.ticker
         df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
@@ -38,7 +39,7 @@ class Stock( object ):
         return df
         # return self.history( period='max' )
 
-    @property
+    @cached_property
     def info( self ):
         # Returns the yfTicker's info dict
         # TODO:
@@ -53,6 +54,10 @@ class Stock( object ):
 
     ##### Basic Attributes #####
     @property
+    def longName( self ):
+        return self.info[ 'longName' ]
+
+    @property
     def forwardPE( self ):
         return self.info[ 'forwardPE' ]
 
@@ -65,7 +70,10 @@ class Stock( object ):
     def shortPercentOfFloat( self ):
         return self.info[ 'shortPercentOfFloat' ]
 
-
+    @property
+    def sector( self ):
+        return self.info[ 'sector' ]
+    
     ##### Basic Price Metrics #####
     @property
     def allTimeHigh( self ):
@@ -76,6 +84,10 @@ class Stock( object ):
         return self.maxHistoryDf[ 'Close' ].min()
 
     @property
+    def fiftyTwoWeekHigh( self ):
+        return self.info[ 'fiftyTwoWeekHigh' ]
+
+    @property
     def lastClosingPrice( self ):
         return self.maxHistoryDf[ 'Close' ][-1]
 
@@ -83,6 +95,9 @@ class Stock( object ):
     def pctFromAllTimeHigh( self ):
         return 100 * ( self.lastClosingPrice - self.allTimeHigh ) / self.allTimeHigh
     
+    @property
+    def pctFromFiftyTwoWeekHigh( self ):
+        return 100 * ( self.lastClosingPrice - self.fiftyTwoWeekHigh ) / self.fiftyTwoWeekHigh
 
     ##### Intermediate Price Metrics #####
     def nDayHigh( self, n ):
