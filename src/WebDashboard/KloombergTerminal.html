@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Kelvin's Homemade Bloomberg Terminal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+	  font-family: Arial;
+      }
+    </style>
+  </head>
+  <body>
+
+    <h1>Kelvin's Homemade Bloomberg Terminal</h1>
+    <p>Welcome to Kloomberg! Here I go trying to learn web dev...Good luck!</p>
+
+    <div>
+      <label for="Sectors">Choose a sector:</label>
+      <select name="Sectors" id="Sectors">
+	<option value="all">All</option>      
+	<option value="communication services">Communication Services</option>
+	<option value="consumer cyclical">Consumer Cyclical</option>      
+	<option value="consumer defensive">Consumer Defensive</option>
+	<option value="energy">Energy</option>      
+	<option value="financial services">Financial Services</option>
+	<option value="healthcare">Healthcare</option>
+	<option value="industrials">Industrials</option>            
+	<option value="real estate">Real Estate</option>      
+	<option value="technology">Technology</option>
+	<option value="utilities">Utilities</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="SortBy">Sort by:</label>
+      <select name="SortBy" id="SortBy">
+	<option value="none">None</option>	
+	<option value="dividend yield">Dividend Yield</option>
+	<option value="forward pe">Forward PE</option>      
+	<option value="pct from ath">Pct from All-time High</option>
+      </select>
+    </div>
+    
+    <div>
+      <!--<input type="text" id="myInput" onkeyup="myFunction()" placeholder="Search for stocks...">
+      -->
+      <table id="Stocks">
+	<tr class="header">
+	  <th style="width:20%;">Ticker</th>
+	  <th style="width:50%;">Full Name</th>	  
+	  <th style="width:30%;">Sector</th>
+	</tr>
+	<tr>
+	  <td>AAPL</td>
+	  <td>Apple Inc.</td>
+	  <td>Technology</td>	  	  
+	</tr>
+	<tr>
+	  <td>INTC</td>
+	  <td>Intel</td>
+	  <td>Technology</td>	  	  
+	</tr>
+	<tr>
+	  <td>CAT</td>
+	  <td>Caterpillar</td>
+	  <td>Industrials</td>	  	  
+	</tr>
+	<tr>
+	  <td>ANET</td>
+	  <td>Arista Networks</td>
+	  <td>Technology</td>
+	</tr>
+	<tr>
+	  <td>MCD</td>
+	  <td>McDonalds</td>
+	  <td>Consumer Cyclical</td>
+	</tr>
+      </table>
+    </div>
+
+
+    <!--A bit of basic Javascript-->
+    <p id="message">Hello there</p>
+    <script>
+      document.getElementById("message").innerHTML = "General Kenobi"
+    </script>
+
+    
+    <!--A bit of more advanced Javascript-->    
+    <div>
+      <table id="BuildTable">
+      </table>
+      <script src="build-table.js"></script>
+    </div>
+
+
+    <!--A bit of even more advanced Javascript-->    
+    <script>
+      function sortTable(n, numerical) {
+	  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+	  table = document.getElementById("StockDataFrame");
+	  switching = true;
+	  // Set the sorting direction to ascending:
+	  dir = "asc"; 
+	  /* Make a loop that will continue until
+	   no switching has been done: */
+	  while (switching) {
+	      // Start by saying: no switching is done:
+	      switching = false;
+	      rows = table.rows;
+	      /* Loop through all table rows (except the
+	       first, which contains table headers): */
+	      for (i = 1; i < (rows.length - 1); i++) {
+		  // Start by saying there should be no switching:
+		  shouldSwitch = false;
+		  /* Get the two elements you want to compare,
+		   one from current row and one from the next: */
+		  if (n == 0) {
+		      x = rows[i].getElementsByTagName("TH")[n];
+		      y = rows[i + 1].getElementsByTagName("TH")[n];
+		  }
+		  else {
+		      x = rows[i].getElementsByTagName("TD")[n-1];
+		      y = rows[i + 1].getElementsByTagName("TD")[n-1];
+		  }
+		  /* Check if the two rows should switch place,
+		   based on the direction, asc or desc: */
+		  if (numerical == false) {
+		      if (dir == "asc") {
+			  if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+			      // If so, mark as a switch and break the loop:
+			      shouldSwitch = true;
+			      break;
+			  }
+		      }
+		      else if (dir == "desc") {
+			  if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+			      // If so, mark as a switch and break the loop:
+			      shouldSwitch = true;
+			      break;
+			  }
+		      }
+		  }
+		  else {
+                      if (dir == "asc") {
+                          if (parseFloat(x.innerHTML) > parseFloat(y.innerHTML)) {
+                              // If so, mark as a switch and break the loop:                                                                                                                                                                  
+                              shouldSwitch = true;
+                              break;
+                          }
+                      }
+                      else if (dir == "desc") {
+                          if (parseFloat(x.innerHTML) < parseFloat(y.innerHTML)) {
+                              // If so, mark as a switch and break the loop:                                                                                                                                                                  
+                              shouldSwitch = true;
+                              break;
+                          }
+                      }		      
+		  }
+	      }
+	      if (shouldSwitch) {
+		  /* If a switch has been marked, make the switch
+		   and mark that a switch has been done: */
+		  rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+		  switching = true;
+		  // Each time a switch is done, increase this count by 1:
+		  switchcount ++; 
+	      } else {
+		  /* If no switching has been done AND the direction is "asc",
+		   set the direction to "desc" and run the while loop again. */
+		  if (switchcount == 0 && dir == "asc") {
+		      dir = "desc";
+		      switching = true;
+		  }
+	      }
+	  }
+      }
+    </script>
+    
+    <table border="1" class="dataframe" id="StockDataFrame">
+      <thead>
+	<tr style="text-align: right;">
+	  <th onclick="sortTable(0, false)">Ticker</th>
+	  <th onclick="sortTable(1, false)">LongName</th>
+	  <th onclick="sortTable(2, false)">Sector</th>
+	  <th onclick="sortTable(3, true)">LastClosingPrice</th>
+	  <th onclick="sortTable(4, true)">AllTimeHigh</th>
+	  <th onclick="sortTable(5, true)">PctFrom52WkHigh</th>
+	  <th onclick="sortTable(6, true)">PctFromATH</th>
+	  <th onclick="sortTable(7, true)">DividendYield</th>
+	  <th onclick="sortTable(8, true)">ForwardPE</th>
+	</tr>
+      </thead>
+      <tbody>
+	<tr>
+	  <th>VRTX</th>
+	  <td>Vertex Pharmaceuticals Incorporated</td>
+	  <td>Healthcare</td>
+	  <td>289.69</td>
+	  <td>321.48</td>
+	  <td>-10.80</td>
+	  <td>-9.89</td>
+	  <td>0.00</td>
+	  <td>22.90</td>
+	</tr>
+	<tr>
+	  <th>WBA</th>
+	  <td>Walgreens Boots Alliance, Inc.</td>
+	  <td>Healthcare</td>
+	  <td>38.63</td>
+	  <td>77.04</td>
+	  <td>-29.76</td>
+	  <td>-49.86</td>
+	  <td>5.41</td>
+	  <td>7.43</td>
+	</tr>
+	<tr>
+	  <th>ZS</th>
+	  <td>Zscaler, Inc.</td>
+	  <td>Technology</td>
+	  <td>108.78</td>
+	  <td>368.78</td>
+	  <td>-67.28</td>
+	  <td>-70.50</td>
+	  <td>0.00</td>
+	  <td>178.33</td>
+	</tr>
+	<tr>
+	  <th>TECH</th>
+	  <td>Bio-Techne Corporation</td>
+	  <td>Healthcare</td>
+	  <td>80.69</td>
+	  <td>134.16</td>
+	  <td>-38.28</td>
+	  <td>-39.86</td>
+	  <td>0.40</td>
+	  <td>33.60</td>
+	</tr>
+	<tr>
+	  <th>WBD</th>
+	  <td>Warner Bros. Discovery, Inc.</td>
+	  <td>Communication Services</td>
+	  <td>9.17</td>
+	  <td>77.27</td>
+	  <td>-70.94</td>
+	  <td>-88.13</td>
+	  <td>0.00</td>
+	  <td>NaN</td>
+	</tr>
+	<tr>
+	  <th>ZBRA</th>
+	  <td>Zebra Technologies Corporation</td>
+	  <td>Technology</td>
+	  <td>248.22</td>
+	  <td>614.55</td>
+	  <td>-59.26</td>
+	  <td>-59.61</td>
+	  <td>0.00</td>
+	  <td>14.37</td>
+	</tr>
+	<tr>
+	  <th>XEL</th>
+	  <td>Xcel Energy Inc.</td>
+	  <td>Utilities</td>
+	  <td>70.93</td>
+	  <td>76.91</td>
+	  <td>-8.67</td>
+	  <td>-7.78</td>
+	  <td>3.12</td>
+	  <td>22.38</td>
+	</tr>
+	<tr>
+	  <th>WDAY</th>
+	  <td>Workday, Inc.</td>
+	  <td>Technology</td>
+	  <td>164.64</td>
+	  <td>300.90</td>
+	  <td>-41.39</td>
+	  <td>-45.28</td>
+	  <td>0.00</td>
+	  <td>47.45</td>
+	</tr>
+	<tr>
+	  <th>XRAY</th>
+	  <td>DENTSPLY SIRONA Inc.</td>
+	  <td>Healthcare</td>
+	  <td>31.83</td>
+	  <td>68.04</td>
+	  <td>-45.78</td>
+	  <td>-53.22</td>
+	  <td>1.64</td>
+	  <td>10.30</td>
+	</tr>
+	<tr>
+	  <th>CDAY</th>
+	  <td>Ceridian HCM Holding Inc.</td>
+	  <td>Technology</td>
+	  <td>60.61</td>
+	  <td>130.32</td>
+	  <td>-44.49</td>
+	  <td>-53.49</td>
+	  <td>0.00</td>
+	  <td>55.72</td>
+	</tr>
+	<tr>
+	  <th>ECL</th>
+	  <td>Ecolab Inc.</td>
+	  <td>Basic Materials</td>
+	  <td>143.80</td>
+	  <td>233.30</td>
+	  <td>-39.42</td>
+	  <td>-38.36</td>
+	  <td>1.33</td>
+	  <td>23.54</td>
+	</tr>
+	<tr>
+	  <th>WELL</th>
+	  <td>Welltower Inc.</td>
+	  <td>Real Estate</td>
+	  <td>65.07</td>
+	  <td>96.01</td>
+	  <td>-34.56</td>
+	  <td>-32.23</td>
+	  <td>4.04</td>
+	  <td>66.40</td>
+	</tr>
+	<tr>
+	  <th>VRSK</th>
+	  <td>Verisk Analytics, Inc.</td>
+	  <td>Industrials</td>
+	  <td>175.61</td>
+	  <td>228.53</td>
+	  <td>-23.75</td>
+	  <td>-23.16</td>
+	  <td>0.71</td>
+	  <td>29.56</td>
+	</tr>
+	<tr>
+	  <th>WDC</th>
+	  <td>Western Digital Corporation</td>
+	  <td>Technology</td>
+	  <td>30.59</td>
+	  <td>97.65</td>
+	  <td>-55.90</td>
+	  <td>-68.67</td>
+	  <td>0.00</td>
+	  <td>3.72</td>
+	</tr>
+	<tr>
+	  <th>WEC</th>
+	  <td>WEC Energy Group, Inc.</td>
+	  <td>Utilities</td>
+	  <td>95.48</td>
+	  <td>106.82</td>
+	  <td>-11.91</td>
+	  <td>-10.62</td>
+	  <td>3.30</td>
+	  <td>22.26</td>
+	</tr>
+	<tr>
+	  <th>VRSN</th>
+	  <td>VeriSign, Inc.</td>
+	  <td>Technology</td>
+	  <td>203.72</td>
+	  <td>255.93</td>
+	  <td>-20.74</td>
+	  <td>-20.40</td>
+	  <td>0.00</td>
+	  <td>33.07</td>
+	</tr>
+	<tr>
+	  <th>WHR</th>
+	  <td>Whirlpool Corporation</td>
+	  <td>Consumer Cyclical</td>
+	  <td>141.62</td>
+	  <td>238.28</td>
+	  <td>-42.30</td>
+	  <td>-40.57</td>
+	  <td>5.20</td>
+	  <td>6.10</td>
+	</tr>
+	<tr>
+	  <th>WRK</th>
+	  <td>WestRock Company</td>
+	  <td>Consumer Cyclical</td>
+	  <td>35.46</td>
+	  <td>60.29</td>
+	  <td>-35.27</td>
+	  <td>-41.18</td>
+	  <td>2.99</td>
+	  <td>7.64</td>
+	</tr>
+	<tr>
+	  <th>WSM</th>
+	  <td>Williams-Sonoma, Inc.</td>
+	  <td>Consumer Cyclical</td>
+	  <td>115.56</td>
+	  <td>220.57</td>
+	  <td>-41.44</td>
+	  <td>-47.61</td>
+	  <td>2.54</td>
+	  <td>11.48</td>
+	</tr>
+	<tr>
+	  <th>VLO</th>
+	  <td>Valero Energy Corporation</td>
+	  <td>Energy</td>
+	  <td>124.37</td>
+	  <td>142.82</td>
+	  <td>-15.29</td>
+	  <td>-12.92</td>
+	  <td>3.09</td>
+	  <td>22.57</td>
+	</tr>
+	<tr>
+	  <th>ZTS</th>
+	  <td>Zoetis Inc.</td>
+	  <td>Healthcare</td>
+	  <td>145.76</td>
+	  <td>245.23</td>
+	  <td>-41.53</td>
+	  <td>-40.56</td>
+	  <td>0.86</td>
+	  <td>29.39</td>
+	</tr>
+	<tr>
+	  <th>TYL</th>
+	  <td>Tyler Technologies, Inc.</td>
+	  <td>Technology</td>
+	  <td>314.91</td>
+	  <td>552.14</td>
+	  <td>-42.12</td>
+	  <td>-42.97</td>
+	  <td>0.00</td>
+	  <td>41.58</td>
+	</tr>
+	<tr>
+	  <th>ZBH</th>
+	  <td>Zimmer Biomet Holdings, Inc.</td>
+	  <td>Healthcare</td>
+	  <td>126.69</td>
+	  <td>171.45</td>
+	  <td>-6.19</td>
+	  <td>-26.11</td>
+	  <td>0.86</td>
+	  <td>14.51</td>
+	</tr>
+	<tr>
+	  <th>FRC</th>
+	  <td>First Republic Bank</td>
+	  <td>Financial Services</td>
+	  <td>118.77</td>
+	  <td>220.34</td>
+	  <td>-43.51</td>
+	  <td>-46.10</td>
+	  <td>0.92</td>
+	  <td>16.89</td>
+	</tr>
+	<tr>
+	  <th>XOM</th>
+	  <td>Exxon Mobil Corporation</td>
+	  <td>Energy</td>
+	  <td>108.68</td>
+	  <td>114.18</td>
+	  <td>-5.22</td>
+	  <td>-4.82</td>
+	  <td>3.32</td>
+	  <td>25.94</td>
+	</tr>
+	<tr>
+	  <th>PTC</th>
+	  <td>PTC Inc.</td>
+	  <td>Technology</td>
+	  <td>118.87</td>
+	  <td>152.69</td>
+	  <td>-10.72</td>
+	  <td>-22.15</td>
+	  <td>0.00</td>
+	  <td>23.13</td>
+	</tr>
+	<tr>
+	  <th>VTR</th>
+	  <td>Ventas, Inc.</td>
+	  <td>Real Estate</td>
+	  <td>45.49</td>
+	  <td>65.20</td>
+	  <td>-28.94</td>
+	  <td>-30.23</td>
+	  <td>4.65</td>
+	  <td>96.79</td>
+	</tr>
+	<tr>
+	  <th>XYL</th>
+	  <td>Xylem Inc.</td>
+	  <td>Industrials</td>
+	  <td>109.73</td>
+	  <td>135.96</td>
+	  <td>-9.35</td>
+	  <td>-19.29</td>
+	  <td>1.21</td>
+	  <td>35.28</td>
+	</tr>
+	<tr>
+	  <th>WFC</th>
+	  <td>Wells Fargo &amp; Company</td>
+	  <td>Financial Services</td>
+	  <td>40.98</td>
+	  <td>57.96</td>
+	  <td>-32.04</td>
+	  <td>-29.30</td>
+	  <td>2.64</td>
+	  <td>11.48</td>
+	</tr>
+	<tr>
+	  <th>WST</th>
+	  <td>West Pharmaceutical Services, Inc.</td>
+	  <td>Healthcare</td>
+	  <td>235.13</td>
+	  <td>470.20</td>
+	  <td>-50.50</td>
+	  <td>-49.99</td>
+	  <td>0.28</td>
+	  <td>30.18</td>
+	</tr>
+	<tr>
+	  <th>MOH</th>
+	  <td>Molina Healthcare, Inc.</td>
+	  <td>Healthcare</td>
+	  <td>332.42</td>
+	  <td>369.23</td>
+	  <td>-11.12</td>
+	  <td>-9.97</td>
+	  <td>0.00</td>
+	  <td>17.79</td>
+	</tr>
+	<tr>
+	  <th>VTRS</th>
+	  <td>Viatris Inc.</td>
+	  <td>Healthcare</td>
+	  <td>11.01</td>
+	  <td>71.34</td>
+	  <td>-29.42</td>
+	  <td>-84.57</td>
+	  <td>4.91</td>
+	  <td>2.96</td>
+	</tr>
+	<tr>
+	  <th>WRB</th>
+	  <td>W. R. Berkley Corporation</td>
+	  <td>Financial Services</td>
+	  <td>73.45</td>
+	  <td>76.28</td>
+	  <td>-4.60</td>
+	  <td>-3.71</td>
+	  <td>0.57</td>
+	  <td>16.40</td>
+	</tr>
+	<tr>
+	  <th>BRO</th>
+	  <td>Brown &amp; Brown, Inc.</td>
+	  <td>Financial Services</td>
+	  <td>56.57</td>
+	  <td>73.01</td>
+	  <td>-23.55</td>
+	  <td>-22.52</td>
+	  <td>0.80</td>
+	  <td>23.67</td>
+	</tr>
+	<tr>
+	  <th>VNO</th>
+	  <td>Vornado Realty Trust</td>
+	  <td>Real Estate</td>
+	  <td>21.45</td>
+	  <td>65.88</td>
+	  <td>-54.61</td>
+	  <td>-67.44</td>
+	  <td>9.07</td>
+	  <td>56.45</td>
+	</tr>
+	<tr>
+	  <th>VMC</th>
+	  <td>Vulcan Materials Company</td>
+	  <td>Basic Materials</td>
+	  <td>175.20</td>
+	  <td>208.61</td>
+	  <td>-18.00</td>
+	  <td>-16.02</td>
+	  <td>0.99</td>
+	  <td>29.20</td>
+	</tr>
+	<tr>
+	  <th>BRN</th>
+	  <td>Barnwell Industries, Inc.</td>
+	  <td>Energy</td>
+	  <td>3.04</td>
+	  <td>26.74</td>
+	  <td>-52.35</td>
+	  <td>-88.63</td>
+	  <td>1.86</td>
+	  <td>NaN</td>
+	</tr>
+	<tr>
+	  <th>YUM</th>
+	  <td>Yum! Brands, Inc.</td>
+	  <td>Consumer Cyclical</td>
+	  <td>128.90</td>
+	  <td>136.24</td>
+	  <td>-7.83</td>
+	  <td>-5.39</td>
+	  <td>2.03</td>
+	  <td>27.31</td>
+	</tr>
+	<tr>
+	  <th>VFC</th>
+	  <td>V.F. Corporation</td>
+	  <td>Consumer Cyclical</td>
+	  <td>25.86</td>
+	  <td>90.55</td>
+	  <td>-66.24</td>
+	  <td>-71.44</td>
+	  <td>7.09</td>
+	  <td>8.72</td>
+	</tr>
+	<tr>
+	  <th>VZ</th>
+	  <td>Verizon Communications Inc.</td>
+	  <td>Communication Services</td>
+	  <td>38.41</td>
+	  <td>56.00</td>
+	  <td>-30.81</td>
+	  <td>-31.41</td>
+	  <td>7.21</td>
+	  <td>7.43</td>
+	</tr>
+	<tr>
+	  <th>ZM</th>
+	  <td>Zoom Video Communications, Inc.</td>
+	  <td>Technology</td>
+	  <td>65.89</td>
+	  <td>568.34</td>
+	  <td>-65.84</td>
+	  <td>-88.41</td>
+	  <td>0.00</td>
+	  <td>16.11</td>
+	</tr>
+	<tr>
+	  <th>ZION</th>
+	  <td>Zions Bancorporation, National Association</td>
+	  <td>Financial Services</td>
+	  <td>48.45</td>
+	  <td>72.32</td>
+	  <td>-35.78</td>
+	  <td>-33.01</td>
+	  <td>3.25</td>
+	  <td>11.19</td>
+	</tr>
+	<tr>
+	  <th>WTW</th>
+	  <td>Willis Towers Watson Public Limited Company</td>
+	  <td>Financial Services</td>
+	  <td>244.39</td>
+	  <td>264.44</td>
+	  <td>-3.40</td>
+	  <td>-7.58</td>
+	  <td>1.55</td>
+	  <td>143.76</td>
+	</tr>
+	<tr>
+	  <th>WMB</th>
+	  <td>The Williams Companies, Inc.</td>
+	  <td>Energy</td>
+	  <td>33.32</td>
+	  <td>38.23</td>
+	  <td>-12.25</td>
+	  <td>-12.84</td>
+	  <td>5.29</td>
+	  <td>27.09</td>
+	</tr>
+	<tr>
+	  <th>VICI</th>
+	  <td>VICI Properties Inc.</td>
+	  <td>Real Estate</td>
+	  <td>32.67</td>
+	  <td>35.11</td>
+	  <td>-8.46</td>
+	  <td>-6.95</td>
+	  <td>5.03</td>
+	  <td>15.78</td>
+	</tr>
+	<tr>
+	  <th>BRK-A</th>
+	  <td>Berkshire Hathaway Inc.</td>
+	  <td>Financial Services</td>
+	  <td>475843.00</td>
+	  <td>539180.00</td>
+	  <td>-12.59</td>
+	  <td>-11.75</td>
+	  <td>0.00</td>
+	  <td>24.78</td>
+	</tr>
+	<tr>
+	  <th>WY</th>
+	  <td>Weyerhaeuser Company</td>
+	  <td>Real Estate</td>
+	  <td>31.49</td>
+	  <td>41.57</td>
+	  <td>-26.84</td>
+	  <td>-24.25</td>
+	  <td>2.33</td>
+	  <td>23.33</td>
+	</tr>
+	<tr>
+	  <th>WMT</th>
+	  <td>Walmart Inc.</td>
+	  <td>Consumer Defensive</td>
+	  <td>143.77</td>
+	  <td>158.00</td>
+	  <td>-10.57</td>
+	  <td>-9.01</td>
+	  <td>1.60</td>
+	  <td>24.58</td>
+	</tr>
+	<tr>
+	  <th>LITE</th>
+	  <td>Lumentum Holdings Inc.</td>
+	  <td>Technology</td>
+	  <td>53.53</td>
+	  <td>108.93</td>
+	  <td>-50.84</td>
+	  <td>-50.86</td>
+	  <td>0.00</td>
+	  <td>7.75</td>
+	</tr>
+	<tr>
+	  <th>WYNN</th>
+	  <td>Wynn Resorts, Limited</td>
+	  <td>Consumer Cyclical</td>
+	  <td>80.72</td>
+	  <td>213.07</td>
+	  <td>-16.35</td>
+	  <td>-62.12</td>
+	  <td>0.00</td>
+	  <td>44.84</td>
+	</tr>
+	<tr>
+	  <th>WAB</th>
+	  <td>Westinghouse Air Brake Technologies Corporation</td>
+	  <td>Industrials</td>
+	  <td>100.49</td>
+	  <td>111.44</td>
+	  <td>-4.76</td>
+	  <td>-9.83</td>
+	  <td>0.66</td>
+	  <td>20.94</td>
+	</tr>
+	<tr>
+	  <th>BRK-B</th>
+	  <td>Berkshire Hathaway Inc.</td>
+	  <td>Financial Services</td>
+	  <td>315.13</td>
+	  <td>359.57</td>
+	  <td>-12.97</td>
+	  <td>-12.36</td>
+	  <td>0.00</td>
+	  <td>26.20</td>
+	</tr>
+	<tr>
+	  <th>CDW</th>
+	  <td>CDW Corporation</td>
+	  <td>Technology</td>
+	  <td>175.47</td>
+	  <td>205.67</td>
+	  <td>-15.93</td>
+	  <td>-14.68</td>
+	  <td>1.25</td>
+	  <td>18.08</td>
+	</tr>
+	<tr>
+	  <th>WM</th>
+	  <td>Waste Management, Inc.</td>
+	  <td>Industrials</td>
+	  <td>159.21</td>
+	  <td>173.96</td>
+	  <td>-9.53</td>
+	  <td>-8.48</td>
+	  <td>1.63</td>
+	  <td>29.21</td>
+	</tr>
+	<tr>
+	  <th>WAT</th>
+	  <td>Waters Corporation</td>
+	  <td>Healthcare</td>
+	  <td>346.66</td>
+	  <td>424.70</td>
+	  <td>-7.62</td>
+	  <td>-18.38</td>
+	  <td>0.00</td>
+	  <td>32.55</td>
+	</tr>
+	<tr>
+	  <th>IEX</th>
+	  <td>IDEX Corporation</td>
+	  <td>Industrials</td>
+	  <td>227.16</td>
+	  <td>242.05</td>
+	  <td>-6.71</td>
+	  <td>-6.15</td>
+	  <td>1.04</td>
+	  <td>27.97</td>
+	</tr>
+      </tbody>
+    </table>    
+  </body>
+</html>
