@@ -28,7 +28,7 @@ tableLines[ 3 ] = tableLines[ 3 ][:-5] + 'Ticker' + tableLines[ 3 ][-5:]
 
 # Set onclick for the Ticker column, which is the index column of the DataFrame.
 origLine = tableLines[ 3 ]
-newLine = origLine[:9] + ' onclick="sortTable(0, false)"' + origLine[9:]
+newLine = origLine[:9] + ' onclick="sortBy(0)"' + origLine[9:]
 tableLines[ 3 ]  = newLine
 
 
@@ -39,10 +39,10 @@ for dfColNum in range( len( df.columns ) ):
     lineNum = 4 + dfColNum
     htmlTableColNum = dfColNum + 1
     origLine = tableLines[ lineNum ]
-    dfElement = df.iloc[ 0, dfColNum ]
-    colIsNumerical = isinstance( dfElement, int ) or isinstance( dfElement, float )
-    colIsNumerical = str( colIsNumerical ).lower()
-    newLine = origLine[:9] + ' onclick="sortTable(%d, %s)"' % ( htmlTableColNum, colIsNumerical ) + origLine[9:]
+    #dfElement = df.iloc[ 0, dfColNum ]
+    #colIsNumerical = isinstance( dfElement, int ) or isinstance( dfElement, float )
+    #colIsNumerical = str( colIsNumerical ).lower()
+    newLine = origLine[:9] + ' onclick="sortBy(%d)"' % htmlTableColNum + origLine[9:]
     tableLines[ lineNum ] = newLine
 
 # Form the finished HTML code for the table.
