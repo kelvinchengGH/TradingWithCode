@@ -1,4 +1,4 @@
-#!/Library/Frameworks/Python.framework/Versions/2.7/bin/python
+#!/usr/bin/env python
 
 import sys
 import numpy as np
@@ -40,7 +40,7 @@ tickers = [ t.strip() for t in tickers ]
 def fetchData( tickerList ):
    for ticker in tickerList:
       csvDest = csvDestDir + '/%s.csv' % ticker
-      RawDataUtil.getDailyPriceCsvFast( ticker, csvDest )
+      RawDataUtil.getDailyPriceCsv( ticker, csvDest )
       jsonDest = jsonDestDir + '/%s.json' % ticker
       RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
 

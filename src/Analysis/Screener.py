@@ -37,45 +37,52 @@ class Screener( object ):
                 pass
         return sorted( list( sectors ) )
 
+
+    columnTitleToCodeLineMap = {
+        "LongName" : "stock.longName",
+        "Sector" : "stock.sector",
+        "DividendYield" : "stock.dividendYield",
+        "AllTimeHigh" : "stock.allTimeHigh",
+        "PctFrom52WkHigh" : "stock.pctFromFiftyTwoWeekHigh",
+        "LastClosingPrice": "stock.lastClosingPrice",
+        "DividendYield" : "stock.dividendYield",
+        "ForwardPE" : "stock.forwardPE",
+        "1DayPctReturn" : "stock.nDayReturn( 1 )",
+        "5DayPctReturn" : "stock.nDayReturn( 5 )",
+    }
+
     @property
     def df( self ):
-        data = {
-            'LongName' : [],
-            'Sector' : [],
-            'LastClosingPrice' : [],
-            'AllTimeHigh' : [],
-            'PctFrom52WkHigh' : [],
-            'PctFromATH' : [],
-            'DividendYield' : [],
-            'ForwardPE' : [],
-        }
+        # Edit the columns list with the stuff you want to include.
+        # Make sure columnTitleToCodeLineMap supports each column.
+        columns = [ "LongName",
+                    "Sector",
+                    "LastClosingPrice",
+                    "AllTimeHigh",
+                    "1DayPctReturn",
+                    "5DayPctReturn",
+                    "PctFrom52WkHigh",
+                    "DividendYield",
+                    "ForwardPE",
+        ]
+
+        data = { c : [] for c in columns }
         tickers = []
+
         for stock in self.stocks:
             try:
-                longName = stock.longName
-                sector = stock.sector
-                lastClosingPrice = stock.lastClosingPrice
-                allTimeHigh = stock.allTimeHigh
-                pctFromAllTimeHigh = stock.pctFromAllTimeHigh
-                pctFromFiftyTwoWeekHigh = stock.pctFromFiftyTwoWeekHigh
-                dividendYield = stock.dividendYield
-                forwardPE = stock.forwardPE
-                data[ 'LongName' ].append( longName )
-                data[ 'Sector' ].append( sector )                
-                data[ 'LastClosingPrice' ].append( lastClosingPrice )
-                data[ 'AllTimeHigh' ].append( allTimeHigh )
-                data[ 'PctFromATH' ].append( pctFromAllTimeHigh )
-                data[ 'PctFrom52WkHigh' ].append( pctFromFiftyTwoWeekHigh )
-                data[ 'DividendYield' ].append( dividendYield )
-                data[ 'ForwardPE' ].append( forwardPE )
+                for column in columns:
+                    value = eval( self.columnTitleToCodeLineMap[ column ] )
+                    data[ column ].append( value )
                 tickers.append( stock.ticker )
-            except:
+            except Exception as e:
+                print( e )
                 print( "failed to create DataFrame row for %s" % stock.ticker )
                 pass
         df = pd.DataFrame( data, index=tickers )
         df = df.round( 2 )
         return df
-    
+
 
 ############
 # main()
