@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+
+
+"""
+A script to run smaller scrips to update all my data to the latest.
+"""
+
+
+import os
+
+
+def runScript( cmd ):
+    print( "*** Running %s ***" % cmd )
+    os.system( cmd )
+
+
+runScript( './src/DataCollection/scripts/update-data' )
+runScript( './data/ProcessedData/DailyClosingPriceCsvs/populate.py' )
+runScript( './src/WebDashboard/create-html.py' )
+
+
+print( "\n*** Done! ***" )
