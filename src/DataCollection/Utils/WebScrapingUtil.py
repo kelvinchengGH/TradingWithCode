@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os, subprocess
 from bs4 import BeautifulSoup
 

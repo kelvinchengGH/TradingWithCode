@@ -33,7 +33,7 @@ class Stock( object ):
 
     @cached_property
     def maxHistoryDf( self ):
-        filePath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/%s.csv' % self.ticker
+        filePath = ROOT_DIR + '/data/ProcessedData/DailyClosingPriceCsvs/%s.csv' % self.ticker
         df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
                           na_values=[ 'nan' ] )
         return df

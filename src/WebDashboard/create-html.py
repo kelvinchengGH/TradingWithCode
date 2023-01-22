@@ -7,7 +7,14 @@ Take the template HTML file, and add in the missing stuff.
 ###########
 # Imports
 ###########
+import os
 import Screener
+
+
+###########
+# Constants
+###########
+THIS_DIR = os.path.dirname( __file__ )
 
 
 # Fetch the table of stock data, and convert it to an HTML table.
@@ -50,11 +57,12 @@ finishedTableText = '\n'.join( tableLines )
 
 
 # Open the template HTML file, and substitute the table where the PLACEHOLDER comment is.
-with open( 'template.html', 'r' ) as f:
+templatePath = THIS_DIR + '/template.html'
+with open( templatePath, 'r' ) as f:
     origHtmlText = f.read()
 
 newHtmlText = origHtmlText.replace( '<!--PLACEHOLDER: StockDataFrame table -->', finishedTableText )
-
-with open( 'index.html', 'w' ) as f:
+newHtmlPath = THIS_DIR + '/index.html'
+with open( newHtmlPath, 'w' ) as f:
     f.write( newHtmlText )
 

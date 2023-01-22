@@ -25,8 +25,8 @@ class Screener( object ):
     def __init__( self ):
         csvDirPath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/'
         csvs = os.listdir( csvDirPath )
-        tickers = [ filename[:-4] for filename in csvs ]
-        self.stocks = [ Stock.Stock( t ) for t in tickers ]
+        tickers = [ filename[:-4] for filename in csvs if filename.endswith( '.csv' ) ]
+        self.stocks = [ Stock.Stock( t ) for t in sorted( tickers ) ]
 
     def getSectors( self ):
         sectors = set()
@@ -70,6 +70,7 @@ class Screener( object ):
                 data[ 'ForwardPE' ].append( forwardPE )
                 tickers.append( stock.ticker )
             except:
+                print( "failed to create DataFrame row for %s" % stock.ticker )
                 pass
         df = pd.DataFrame( data, index=tickers )
         df = df.round( 2 )

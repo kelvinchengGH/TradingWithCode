@@ -69,7 +69,7 @@ def getDailyPriceCsv( ticker, dest='' ):
    
    Keyword arguments:
       ticker -- The ticker symbol
-      dest   -- Path to the created CSV file
+      dest   -- Path to the directory where we want the CSV file
    '''
 
    # Fetch Yahoo Finance data into a Python DataFrame 
