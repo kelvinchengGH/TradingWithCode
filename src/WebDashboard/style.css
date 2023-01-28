@@ -1,0 +1,12 @@
+body
+{
+    font-family: Arial;
+}
+
+h1
+{
+    font-family: Comic Sans MS;
+    border: 3px dotted Green;
+    width: 625px;
+    background-color: #90ee90;
+}

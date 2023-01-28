@@ -3,18 +3,19 @@
 <html lang="en">
 
   <head>
-    <title>Kelvin's Homemade Bloomberg Terminal</title>
-    <meta charset="utf-8"/>
-    <meta content="width=device-width, initial-scale=1" name="viewport"/>
-    <style>
-      body {
-	  font-family: Arial;
-      }
-    </style>
+    <title>Kloomberg</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Kelvin's Homemade Bloomberg Terminal. It's a real game-changer, no cap!">
+
+    <link rel="shortcut icon" href="diamond.ico">
+    <link rel="stylesheet" href="style.css">
+
   </head>
   
   <body>
-    <h1>Kelvin's Homemade Bloomberg Terminal</h1>
+    <noscript>JavaScript Is Not Enabled!</noscript>
+    <h1 onmouseover="this.style.color='#8B0000'" onmouseout="this.style.color='Black'">Kelvin's Homemade Bloomberg Terminal</h1>
     <p>Welcome to Kloomberg! Here I go trying to learn web dev...Good luck!</p>
 
     <!-- Make it a list of boxes you can check and uncheck. -->
@@ -36,8 +37,27 @@
       </select>
     </div>        
 
-    <script src="sort-table.js"></script>
 
+    <div>
+      <form id="SectorCheckboxes" method="POST">
+	<fieldset>
+	  <legend>Select sectors to include</legend>
+	  <div><input type="checkbox" name="Top" value="Communication Services">Communication Services</div>
+	  <div><input type="checkbox" name="Top" value="Consumer Cyclical">Consumer Cyclical</div>
+	  <div><input type="checkbox" name="Top" value="Consumer Defensive">Consumer Defensive</div>
+	  <div><input type="checkbox" name="Top" value="Energy">Energy</div>
+	  <div><input type="checkbox" name="Top" value="Financial Services">Financial Services</div>
+	  <div><input type="checkbox" name="Top" value="Healthcare">Healthcare</div>
+	  <div><input type="checkbox" name="Top" value="Industrials">Industrials</div>
+	  <div><input type="checkbox" name="Top" value="Real Estate">Real Estate</div>
+	  <div><input type="checkbox" name="Top" value="Technology">Technology</div>
+	  <div><input type="checkbox" name="Top" value="Utilities">Utilities</div>
+	  
+	</fieldset>	
+      </form>  
+    </div>        
+    
     <!--PLACEHOLDER: StockDataFrame table -->
 
+    <script src="sort-table.js"></script>
 </html>
