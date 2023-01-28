@@ -43,7 +43,7 @@ class Screener( object ):
         "Sector" : "stock.sector",
         "DividendYield" : "stock.dividendYield",
         "AllTimeHigh" : "stock.allTimeHigh",
-        "PctFrom52WkHigh" : "stock.pctFromFiftyTwoWeekHigh",
+        "PctFrom52WkHigh" : "stock.pctFromNDayHigh( 252 )",
         "LastClosingPrice": "stock.lastClosingPrice",
         "DividendYield" : "stock.dividendYield",
         "ForwardPE" : "stock.forwardPE",
@@ -71,9 +71,15 @@ class Screener( object ):
 
         for stock in self.stocks:
             try:
+                # First make sure we can collect all the values.
+                values = []
                 for column in columns:
                     value = eval( self.columnTitleToCodeLineMap[ column ] )
-                    data[ column ].append( value )
+                    values.append( value )
+                # Now insert the values into the dictionary.
+                for i, v in enumerate( values ):
+                    column = columns[ i ]
+                    data[ column ].append( v )
                 tickers.append( stock.ticker )
             except Exception as e:
                 print( e )

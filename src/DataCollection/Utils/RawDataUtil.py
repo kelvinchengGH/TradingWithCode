@@ -154,7 +154,7 @@ def getYahooFinanceInfoDict( ticker, dest='' ):
       dest = './%s.json' % ticker
 
    with open( dest, 'w' ) as f:
-      f.write( json.dumps( infoDict, indent=4, sort_keys=True ) )
+      f.write( json.dumps( infoDict.info, indent=4, sort_keys=True ) )
    return 0
 
 

@@ -84,10 +84,6 @@ class Stock( object ):
         return self.maxHistoryDf[ 'Close' ].min()
 
     @property
-    def fiftyTwoWeekHigh( self ):
-        return self.info[ 'fiftyTwoWeekHigh' ]
-
-    @property
     def lastClosingPrice( self ):
         return self.maxHistoryDf[ 'Close' ][-1]
 
@@ -95,10 +91,6 @@ class Stock( object ):
     def pctFromAllTimeHigh( self ):
         return 100 * ( self.lastClosingPrice - self.allTimeHigh ) / self.allTimeHigh
     
-    @property
-    def pctFromFiftyTwoWeekHigh( self ):
-        return 100 * ( self.lastClosingPrice - self.fiftyTwoWeekHigh ) / self.fiftyTwoWeekHigh
-
     ##### Intermediate Price Metrics #####
     def nDayHigh( self, n ):
         idx = -1 * n
