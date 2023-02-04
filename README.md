@@ -1,7 +1,7 @@
 # TradingWithCode
-Use Python to analyze the stock market and design/test trading strategies.
+This is a set of homemade Python tools & web-based tools I made to collect & analyze stock market data and design/test trading strategies.
 
-## Pyhton Version
+## Python Version
 I've been using Python3.11 to work on this project. 
 
 ## Setting Up
