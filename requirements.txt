@@ -1,0 +1,6 @@
+##### Python modules needed to work with this codebase #####
+requests
+numpy
+pandas
+yfinance
+bs4
