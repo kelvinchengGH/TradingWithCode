@@ -15,49 +15,68 @@
   
   <body>
     <noscript>JavaScript Is Not Enabled!</noscript>
-    <h1 onmouseover="this.style.color='#8B0000'" onmouseout="this.style.color='Black'">Kelvin's Homemade Bloomberg Terminal</h1>
-    <p>Welcome to Kloomberg! Here I go trying to learn web dev...Good luck!</p>
+    <header>
+      <img id="stonks-pic" src="stonks.jpg" alt="Banner" width="256" height="144">
+      <hgroup>
+	<h1 onmouseover="this.style.color='#8B0000'" onmouseout="this.style.color='Black'">Kelvin's Homemade Bloomberg Terminal</h1>
+	<h2>Welcome to <em>Kloomberg</em>! Here I go trying to learn web dev...Good luck!</h2>
+      </hgroup>
+    </header>
 
-    <!-- Make it a list of boxes you can check and uncheck. -->
-    <!-- Include a Check All / Uncheck All button. -->    
-    <div>
-      <label for="Sectors">Choose a sector:</label>
-      <select id="Sectors" name="Sectors">
-	<option value="all">All</option>
-	<option value="communication services">Communication Services</option>
-	<option value="consumer cyclical">Consumer Cyclical</option>
-	<option value="consumer defensive">Consumer Defensive</option>
-	<option value="energy">Energy</option>
-	<option value="financial services">Financial Services</option>
-	<option value="healthcare">Healthcare</option>
-	<option value="industrials">Industrials</option>
-	<option value="real estate">Real Estate</option>
-	<option value="technology">Technology</option>
-	<option value="utilities">Utilities</option>
-      </select>
-    </div>        
+    <main>
+      <menu id="financial-news">
+	<h2>The Most Legit Financial News Sites</h2>
+	<p>
+	  <a href="https://finance.yahoo.com">Yahoo Finance</a> |
+	  <a href="https://www.cnbc.com">CNBC</a> |
+	  <a href="https://www.reddit.com/r/wallstreetbets/">wallstreetbets</a>
+	</p>
+      </menu>
 
+      <section>
+	<label for="Sectors">Choose a sector:</label>
+	<select id="Sectors" name="Sectors">
+	  <option value="all">All</option>
+	  <option value="communication services">Communication Services</option>
+	  <option value="consumer cyclical">Consumer Cyclical</option>
+	  <option value="consumer defensive">Consumer Defensive</option>
+	  <option value="energy">Energy</option>
+	  <option value="financial services">Financial Services</option>
+	  <option value="healthcare">Healthcare</option>
+	  <option value="industrials">Industrials</option>
+	  <option value="real estate">Real Estate</option>
+	  <option value="technology">Technology</option>
+	  <option value="utilities">Utilities</option>
+	</select>
 
-    <div>
-      <form id="SectorCheckboxes" method="POST">
-	<fieldset>
-	  <legend>Select sectors to include</legend>
-	  <div><input type="checkbox" name="Top" value="Communication Services">Communication Services</div>
-	  <div><input type="checkbox" name="Top" value="Consumer Cyclical">Consumer Cyclical</div>
-	  <div><input type="checkbox" name="Top" value="Consumer Defensive">Consumer Defensive</div>
-	  <div><input type="checkbox" name="Top" value="Energy">Energy</div>
-	  <div><input type="checkbox" name="Top" value="Financial Services">Financial Services</div>
-	  <div><input type="checkbox" name="Top" value="Healthcare">Healthcare</div>
-	  <div><input type="checkbox" name="Top" value="Industrials">Industrials</div>
-	  <div><input type="checkbox" name="Top" value="Real Estate">Real Estate</div>
-	  <div><input type="checkbox" name="Top" value="Technology">Technology</div>
-	  <div><input type="checkbox" name="Top" value="Utilities">Utilities</div>
-	  
-	</fieldset>	
-      </form>  
-    </div>        
-    
-    <!--PLACEHOLDER: StockDataFrame table -->
+	<form id="SectorCheckboxes" method="POST">
+	  <fieldset>
+	    <legend>Select sectors to include</legend>
+	    <div><input type="checkbox" name="Top" value="Communication Services">Communication Services</div>
+	    <div><input type="checkbox" name="Top" value="Consumer Cyclical">Consumer Cyclical</div>
+	    <div><input type="checkbox" name="Top" value="Consumer Defensive">Consumer Defensive</div>
+	    <div><input type="checkbox" name="Top" value="Energy">Energy</div>
+	    <div><input type="checkbox" name="Top" value="Financial Services">Financial Services</div>
+	    <div><input type="checkbox" name="Top" value="Healthcare">Healthcare</div>
+	    <div><input type="checkbox" name="Top" value="Industrials">Industrials</div>
+	    <div><input type="checkbox" name="Top" value="Real Estate">Real Estate</div>
+	    <div><input type="checkbox" name="Top" value="Technology">Technology</div>
+	    <div><input type="checkbox" name="Top" value="Utilities">Utilities</div>
+	  </fieldset>
+	</form>
+      </section>
+
+      <section>
+	<h2>Stock Comparison Table</h2>
+	<p>Click a column header to sort the rows by that column's value.</p>
+	<!--PLACEHOLDER: StockDataFrame table -->
+      </section>
+    </main>
+
+    <footer>
+      <h3>Thanks for checking us out!</h3>
+      <address>www.kloomberg.com</address>
+    </footer>
 
     <script src="sort-table.js"></script>
 </html>
