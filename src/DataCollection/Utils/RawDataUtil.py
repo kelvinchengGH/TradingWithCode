@@ -158,6 +158,21 @@ def getYahooFinanceInfoDict( ticker, dest='' ):
    return 0
 
 
+def getDividendsCsv( ticker, dest='' ):
+   try:
+      print( "Getting Dividend history for %s" % ticker )
+      dividends = yf.Ticker( ticker ).dividends
+   except Exception as e:
+      print( "[ERROR] Could not get info for %s" % ticker )
+      print( e )
+      return 1
+
+   if not dest:
+      dest = './%s.csv' % ticker
+
+   dividends.to_csv( dest )
+   return 0
+
 def getQuarterlyFinancialCsv( stock, destDir ):
    ''' Get quarterly financial info for a stock into a csv file '''
 

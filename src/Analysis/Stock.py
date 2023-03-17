@@ -4,7 +4,7 @@
 # Imports
 ############
 
-import os, json
+import os, datetime, json
 import pandas as pd
 import yfinance as yf
 from functools import cached_property
@@ -61,10 +61,50 @@ class Stock( object ):
     def forwardPE( self ):
         return self.info[ 'forwardPE' ]
 
+    @cached_property
+    def dividends( self ):
+        '''
+        Return a Pandas Dataframe with the past dividends.
+        >>> s = Stock.Stock( 'AAPL' )
+        >>> s.dividends
+                                 Date  Dividends
+        0   1987-05-11 00:00:00-04:00   0.000536
+        1   1987-08-10 00:00:00-04:00   0.000536
+        2   1987-11-17 00:00:00-05:00   0.000714
+        3   1988-02-12 00:00:00-05:00   0.000714
+        4   1988-05-16 00:00:00-04:00   0.000714
+        ..                        ...        ...
+        73  2022-02-04 00:00:00-05:00   0.220000
+        74  2022-05-06 00:00:00-04:00   0.230000
+        75  2022-08-05 00:00:00-04:00   0.230000
+        76  2022-11-04 00:00:00-04:00   0.230000
+        77  2023-02-10 00:00:00-05:00   0.230000
+
+        [78 rows x 2 columns]
+        '''
+        filePath = ROOT_DIR + '/data/RawData/Dividends/%s.csv' % self.ticker
+        df = pd.read_csv( filePath )
+        return df
+
+    @property
+    def oneYearDividendTotal( self ):
+        '''
+        The sum of the dividends paid out in the last year.
+        '''
+        df = self.dividends.copy()
+        df.Date = df.Date.apply( lambda x: x[:10])
+        df[ 'Date' ] = pd.to_datetime(df['Date'])
+        oneYearAgo = datetime.datetime.now() - datetime.timedelta(365)
+        oneYearDividendTotal = df[ df[ 'Date' ] >= oneYearAgo ].Dividends.sum()
+        return oneYearDividendTotal
+
     @property
     def dividendYield( self ):
-        res = self.info[ 'dividendYield' ]
-        return res * 100 if res else 0
+        # Need to manually compute the dividendYield because
+        # yfinance's "info" feature is blocked.
+        # res = self.info[ 'dividendYield' ]
+        # return res * 100 if res else 0
+        return self.oneYearDividendTotal / self.lastClosingPrice
 
     @property
     def shortPercentOfFloat( self ):
