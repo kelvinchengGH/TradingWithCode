@@ -7,7 +7,6 @@ sys.path.insert( 0, '../Utils' )
 import RawDataUtil
 import WebScrapingUtil
 
-
 ###########
 # Constants
 ###########
@@ -18,6 +17,7 @@ ROOT_DIR = os.path.realpath( os.path.join( THIS_DIR, '../../..'\
 tickerListPath = THIS_DIR + '/tickers.txt'
 csvDestDir = ROOT_DIR + '/data/RawData/DailyPriceCsvs'
 jsonDestDir = ROOT_DIR + '/data/RawData/YahooFinanceInfo'
+dividendDestDir = ROOT_DIR + '/data/RawData/Dividends'
 NUM_PROCESSES = 1
 
 
@@ -46,10 +46,11 @@ tickers = [ t.strip() for t in tickers ]
 def fetchData( tickerList ):
    for ticker in tickerList:
       csvDest = csvDestDir + '/%s.csv' % ticker
+      dividendDest = dividendDestDir + '/%s.csv' % ticker
       RawDataUtil.getDailyPriceCsv( ticker, csvDest )
-      jsonDest = jsonDestDir + '/%s.json' % ticker
-      RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
-
+      RawDataUtil.getDividendsCsv( ticker, dividendDest )
+      #jsonDest = jsonDestDir + '/%s.json' % ticker
+      #RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
 
 # partitionedList = np.array_split( np.array( tickers ), NUM_PROCESSES )
 # processes = []

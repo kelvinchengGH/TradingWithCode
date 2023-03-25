@@ -41,6 +41,18 @@ import pandas as pd
 #       designed their site to be nice to web scrapers like us. :)
 MACROTRENDS_URL_TEMPLATE = 'https://www.macrotrends.net/stocks/charts/%s/%s'
 
+ESSENTIAL_METRICS = [ 'net-income',
+                      'revenue',
+                      'total-share-holder-equity',
+                      'free-cash-flow',
+                      'cash-flow-from-operating-activities',
+                      'eps-earnings-per-share-diluted'
+]
+
+THIS_DIR = os.path.dirname( __file__ )
+ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../../..' ) )
+FINANCIAL_INFO_DIR = ROOT_DIR + "/data/RawData/FinacialsFromMacrotrends"
+
 
 ################
 ##### FUNCTIONS
@@ -164,12 +176,18 @@ def getDataFrame( tickers, metrics ):
       4  2009   GOOG  6.520000e+09  2.365100e+10
    '''
    tickerToAnnualDataMap = {}
-   
+
    for ticker in tickers:
       yearToDataMap = {}
 
       for metric in metrics:
-         yearToValueMap = getAnnualData( ticker, metric )
+         try:
+            yearToValueMap = getAnnualData( ticker, metric )
+         except:
+            # If we can't get data for a certain metric, just continue
+            # and fill in what we can.
+            print( "*** Failed to get %s for %s" % ( metric, ticker ) )
+            continue
          for year, value in yearToValueMap.items():
             if year not in yearToDataMap:
                yearToDataMap[ year ] = {}
@@ -184,11 +202,30 @@ def getDataFrame( tickers, metrics ):
       for year in sorted( yearToDataMap.keys() ):
          row = [ year, ticker ]
          for metric in metrics:
+            value = getattr( yearToDataMap[ year ], metric, 'NaN' )
             row.append( yearToDataMap[ year ][ metric ] )
          rowList.append( row )
    
    df = pd.DataFrame( rowList, columns=columnNames )
    return df
+
+
+
+def getFinancialsCsv( ticker, dest='' ):
+   print( "Getting Macrotrends financials info for %s" % ticker )
+   try:
+      df = getDataFrame( [ ticker ], ESSENTIAL_METRICS )
+   except Exception as e:
+      print( "[ERROR] Could not get Macrotrends financials info for %s" % ticker )
+      print( e )
+      return 1
+   df = df.set_index( 'Year' )
+   df = df.drop( [ 'Ticker' ], axis=1 )
+   if not dest:
+      dest = './%s.csv' % ticker
+   df.to_csv( dest )
+   return 0
+
 
 #################
 ##### MAIN
@@ -202,17 +239,9 @@ if __name__ == '__main__':
                         help="Print the values with dollar signs and commas." )
    args = parser.parse_args()
 
-   metrics = [ 'net-income',
-               'revenue',
-               'total-share-holder-equity',
-               'free-cash-flow',
-               'cash-flow-from-operating-activities',
-               'eps-earnings-per-share-diluted'
-   ]
-
    for ticker in args.tickers:
       ticker = ticker.upper()
-      for metric in metrics:
+      for metric in ESSENTIAL_METRICS:
          metricWithDashesRemoved = metric.replace( '-', ' ' ).title()
          print( "*** %s Annual %s ***" % ( ticker,
                                           metricWithDashesRemoved ) )

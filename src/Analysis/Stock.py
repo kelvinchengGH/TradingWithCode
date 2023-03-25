@@ -51,6 +51,11 @@ class Stock( object ):
         return d
         # return self.yfTicker.info
 
+    @cached_property
+    def financialsDf( self ):
+        filePath = ROOT_DIR + '/data/RawData/FinacialsFromMacrotrends/%s.csv' % self.ticker
+        df = pd.read_csv( filePath, index_col='Year', na_values=[ 'NaN' ] )
+        return df
 
     ##### Basic Attributes #####
     @property
@@ -59,7 +64,20 @@ class Stock( object ):
 
     @property
     def forwardPE( self ):
-        return self.info[ 'forwardPE' ]
+        '''
+        "forwardPE" is the metric that yfinance would provide, but
+        since we can't access it now, we just return an estimate of the PE ratio
+        using the most recent full year's EPS.
+        '''
+        try:
+            df = self.financialsDf
+            mostRecentYearsEarnings = df.iloc[ -1 ][ 'eps-earnings-per-share-diluted' ]
+            if mostRecentYearsEarnings <= 0:
+                return 'NaN'
+            return round( self.lastClosingPrice / mostRecentYearsEarnings, 2 )
+        except:
+            return 'NaN'
+        # return self.info[ 'forwardPE' ]
 
     @cached_property
     def dividends( self ):
@@ -104,7 +122,7 @@ class Stock( object ):
         # yfinance's "info" feature is blocked.
         # res = self.info[ 'dividendYield' ]
         # return res * 100 if res else 0
-        return self.oneYearDividendTotal / self.lastClosingPrice
+        return 100.0 * self.oneYearDividendTotal / self.lastClosingPrice
 
     @property
     def shortPercentOfFloat( self ):
