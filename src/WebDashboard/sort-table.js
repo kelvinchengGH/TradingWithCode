@@ -1,4 +1,12 @@
 /*
+   The table-sorting function below is based off the example provided here:
+      https://lage.us/Javascript-Sort-HTML-Table-by-Column.html
+   and modified to fit my specific use-case.
+*/
+
+
+
+/*
 A few requirements for configuring the table:
 1. The table must have id="sortable", i.e. <table id="sortable">
 2. The table needs to have a table header, and the table header must have
@@ -8,25 +16,6 @@ A few requirements for configuring the table:
 
 cPrev = -1; // global var saves the previous c, used to
             // determine if the same column is clicked again
-
-function compareRows( row1, row2 ) {
-    x1 = row1[c];
-    x2 = row2[c];
-    if (x1 === x2) {
-        return 0;
-    } else {
-        return (parseFloat(x1) < parseFloat(x2)) ? -1 : 1;
-    }
-}
-
-function compareRows2 ( a, b, c ) {
-    if (a[c] == b[c]) {
-        return 0;
-    } else {
-        return (a[c] < b[c]) ? -1 : 1;
-    }
-}
-
 
 function sortBy(c) {
 
@@ -58,16 +47,7 @@ function sortBy(c) {
     th = arrTable.shift(); // remove the header row from the array, and save it
     
     if (c !== cPrev) { // different column is clicked, so sort by the new column
-        arrTable.sort(
-            // function (a, b) {
-            //     if (a[c] == b[c]) {
-            //         return 0;
-            //     } else {
-            //         return (a[c] < b[c]) ? -1 : 1;
-            //     }
-            // }
-	    compareRows
-        );
+        arrTable.sort( compareRows );
     } else { // if the same column is clicked then reverse the array
         arrTable.reverse();
     }
