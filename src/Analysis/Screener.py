@@ -49,6 +49,7 @@ class Screener( object ):
         "ForwardPE" : "stock.forwardPE",
         "1DayPctReturn" : "stock.nDayReturn( 1 )",
         "5DayPctReturn" : "stock.nDayReturn( 5 )",
+        "MarketCap" : "'%.2e' % stock.marketCap",
     }
 
     @property
@@ -57,6 +58,7 @@ class Screener( object ):
         # Make sure columnTitleToCodeLineMap supports each column.
         columns = [ "LongName",
                     "Sector",
+                    "MarketCap",
                     "LastClosingPrice",
                     "AllTimeHigh",
                     "1DayPctReturn",

@@ -17,6 +17,7 @@ ROOT_DIR = os.path.realpath( os.path.join( THIS_DIR, '../../..'\
 tickerListPath = THIS_DIR + '/tickers.txt'
 csvDestDir = ROOT_DIR + '/data/RawData/DailyPriceCsvs'
 jsonDestDir = ROOT_DIR + '/data/RawData/YahooFinanceInfo'
+fastJsonDestDir = ROOT_DIR + '/data/RawData/YahooFinanceFastInfo'
 dividendDestDir = ROOT_DIR + '/data/RawData/Dividends'
 NUM_PROCESSES = 1
 
@@ -47,8 +48,10 @@ def fetchData( tickerList ):
    for ticker in tickerList:
       csvDest = csvDestDir + '/%s.csv' % ticker
       dividendDest = dividendDestDir + '/%s.csv' % ticker
+      fastJsonDest = fastJsonDestDir + '/%s.json' % ticker
       RawDataUtil.getDailyPriceCsv( ticker, csvDest )
       RawDataUtil.getDividendsCsv( ticker, dividendDest )
+      RawDataUtil.getYahooFinanceFastInfo( ticker, fastJsonDest )
       #jsonDest = jsonDestDir + '/%s.json' % ticker
       #RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
 

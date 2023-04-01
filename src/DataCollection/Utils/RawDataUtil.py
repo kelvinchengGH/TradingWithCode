@@ -158,6 +158,28 @@ def getYahooFinanceInfoDict( ticker, dest='' ):
    return 0
 
 
+def getYahooFinanceFastInfo( ticker, dest='' ):
+   '''
+   Fetch dictionary of fast_info and metrics for the given ticker,
+   and save it in a JSON.
+      This info includes things like shares outstanding and market cap.
+   '''
+   try:
+      print( "Getting Yahoo! Finance fast_info dict for %s" % ticker )
+      infoDict = dict( yf.Ticker( ticker ).fast_info )
+   except Exception as e:
+      print( "[ERROR] Could not get info for %s" % ticker )
+      print( e )
+      return 1
+
+   if not dest:
+      dest = './%s.json' % ticker
+
+   with open( dest, 'w' ) as f:
+      f.write( json.dumps( infoDict, indent=4, sort_keys=True ) )
+   return 0
+
+
 def getDividendsCsv( ticker, dest='' ):
    if not dest:
       dest = './%s.csv' % ticker
@@ -174,6 +196,7 @@ def getDividendsCsv( ticker, dest='' ):
       return 1
 
    return 0
+
 
 def getQuarterlyFinancialCsv( stock, destDir ):
    ''' Get quarterly financial info for a stock into a csv file '''

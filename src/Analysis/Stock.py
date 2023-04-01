@@ -9,6 +9,7 @@ import pandas as pd
 import yfinance as yf
 from functools import cached_property
 
+
 ############
 # Constants
 ############
@@ -42,7 +43,7 @@ class Stock( object ):
     @cached_property
     def info( self ):
         # Returns the yfTicker's info dict
-        # TODO:
+        # TODO
         #    1. Check if the JSON exists and is up-to-date.
         #    2. If the JSON does not exist or is out of date, update it.
         filePath = ROOT_DIR + '/data/RawData/YahooFinanceInfo/%s.json' % self.ticker
@@ -50,6 +51,13 @@ class Stock( object ):
             d = json.load( f )
         return d
         # return self.yfTicker.info
+
+    @cached_property
+    def fastInfo( self ):
+        filePath = ROOT_DIR + '/data/RawData/YahooFinanceFastInfo/%s.json' % self.ticker
+        with open( filePath, 'r' ) as f:
+            d = json.load( f )
+            return d
 
     @cached_property
     def financialsDf( self ):
@@ -63,6 +71,57 @@ class Stock( object ):
         return self.info[ 'longName' ]
 
     @property
+    def shares( self ):
+        ''' Shares Outstanding '''
+        return self.fastInfo[ 'shares' ]
+
+    @property
+    def marketCap( self ):
+        return self.fastInfo[ 'marketCap' ]
+
+    @property
+    def marketCapFormatted( self ):
+        '''
+        Returns a string representing the market cap.
+
+        Some illustrative examples:
+            marketCap    marketCapFormatted
+        -----------------------------------
+        1,234,567,890    1.23T
+               69,420    69.4K
+          123,456,789    123M
+
+        '''
+        # TODO: - Figure out how to sort strings of this form so that
+        #            1.12T > 43.20B > 270.34K > 999.69
+        cap = self.marketCap
+
+        if cap < 1000:
+            return ".2f" % cap
+
+        orderOfMagnitudeToSuffixMap = {
+            1e3  : "K",
+            1e6  : "M",
+            1e9  : "B",
+            1e12 : "T",
+            1e15 : "Qa",
+            1e18 : "Qi",
+        }
+
+        orders = sorted( orderOfMagnitudeToSuffixMap.keys() )
+        orderOfMagnitude = next( order for order in orders \
+                                 if cap / 1e3 < order )
+        suffix = orderOfMagnitudeToSuffixMap[ orderOfMagnitude ]
+        scaledCap = cap / orderOfMagnitude
+
+        # Keep just 3 significant figures
+        if scaledCap >= 100:
+            return "%d%s" % ( scaledCap, suffix )
+        elif scaledCap >= 10:
+            return "%.1f%s" % ( scaledCap, suffix )
+        return "%.2f%s" % ( scaledCap, suffix )
+
+    @property
     def forwardPE( self ):
         '''
         "forwardPE" is the metric that yfinance would provide, but
@@ -73,10 +132,10 @@ class Stock( object ):
             df = self.financialsDf
             mostRecentYearsEarnings = df.iloc[ -1 ][ 'eps-earnings-per-share-diluted' ]
             if mostRecentYearsEarnings <= 0:
-                return 'NaN'
-            return round( self.lastClosingPrice / mostRecentYearsEarnings, 2 )
+                return -1
+            return self.lastClosingPrice / mostRecentYearsEarnings
         except:
-            return 'NaN'
+            return -1
         # return self.info[ 'forwardPE' ]
 
     @cached_property
