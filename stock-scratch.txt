@@ -1,0 +1,460 @@
+What are the sectors of the S&P, based on Yahoo Finance?
+Sort companies by sector
+Sort stocks by n-day percentage return.
+Sort stocks by percentage distance from n-day moving average.
+Add support to manually compute the (approximate) PE ratio.
+
+yfinance in Python2 and Python3 format the date differently when getting ticker.history() DataFrame.
+   Need to restrict usage to Python3 only, to make this work.
+
+Add type-hinting and mypy testing.
+Improve documentation
+
+##########################################
+
+export PYTHONPATH="$PYTHONPATH:$PWD/src/Analysis:$PWD/src/DataCollection/Utils"
+
+
+./setup-env.sh 
+
+source ./.venv/bin/activate
+export PYTHONPATH="$PYTHONPATH:$PWD/src/Analysis:$PWD/src/DataCollection/Utils"
+
+##########################################
+
+symbol = 'AAPL'
+dfOrig = pd.read_csv( 'AAPL.csv' )
+
+df = dfOrig.copy()
+df.Date = df.Date.apply( lambda x: x[:10])
+df[ 'Date' ] = pd.to_datetime(df['Date']) 
+
+oneYearAgo = datetime.datetime.now() - datetime.timedelta(365)
+
+df[ df[ 'Date' ] >= oneYearAgo ]
+
+
+
+
+##########################################
+
+# Computing the PE ratio
+
+
+import yfinance as yf
+symbol = 'AAPL'
+t = yf.Ticker( symbol )
+df = t.earnings_dates
+
+
+import MacrotrendsUtil
+MacrotrendsUtil.getFinancialsCsv( 'ANET' )
+
+
+
+import Stock
+s = Stock.Stock( 'AAPL' )
+s.financialsDf
+s.forwardPE
+
+
+
+##########################################
+
+
+
+import Stock
+s = Stock.Stock( 'AAPL' )
+s.dividends
+s.dividendYield
+
+##########################################
+
+import Stock
+s = Stock.Stock( 'AAPL' )
+s.dividends
+s.dividendYield
+
+
+##########################################
+
+
+import yfinance as yf
+symbol = 'INTC'
+ticker = yf.Ticker( symbol )
+dividends = ticker.dividends
+dividends.to_csv( "%s.csv" % symbol )
+earningsDates = ticker.earnings_dates
+
+
+
+
+
+dividendDict = dividends.to_dict()
+secondsInAYear = 365 * 24 * 60 * 60
+
+total = 0
+for timestamp, dividend in dividendDict.items():
+   if timestamp.timestamp() + secondsInAYear >= time.time():
+       total += dividend
+
+
+
+
+##########################################
+
+
+"Dividend Yield" : "stock.dividendYield"
+"Forward PE" : "stock.forwardPE"
+"1-Day Pct Return" : "stock.nDayReturn( 1 )"
+"Pct From 52-Day High" : "stock.pctFromNDayHigh( 52 )"
+
+
+import Screener, Stock
+
+s = Screener.Screener()
+s.df
+
+
+stock = Stock.Stock( "ANET" )
+
+
+
+##########################################
+import pandas as pd
+import yfinance as yf
+
+symbol = 'COST'
+ticker = yf.Ticker( symbol )
+df = ticker.history( period='max' )
+info = ticker.info
+
+
+
+import pandas as pd
+
+df = pd.read_csv( 'ANET.csv' )
+df = df[ [ 'Date', 'Close' ] ]
+df[ 'Date' ] = df[ 'Date' ].apply( lambda dateStr: dateStr[:10] )
+df[ 'Close' ] = df[ 'Close' ].apply( lambda price: "%.2f" % price )
+
+df.to_csv( 'test.csv', index=False )
+
+df = pd.read_csv( 'test.csv' )
+
+##########################################
+
+
+
+import Screener
+s = Screener.Screener()
+s.getSectors()
+df = s.df
+
+ 
+for sector in s.getSectors():
+   print( "*** %s ***" % sector )
+   df1 = df[ (df.DividendYield >= 1.5) & (df.Sector == sector ) & (df. PctFrom52WkHigh <= -25 ) ]
+   df1 = df1[ [ 'LongName', 'PctFrom52WkHigh', 'DividendYield', 'ForwardPE' ] ]
+   print( df1.sort_values( by=['PctFrom52WkHigh'] ).to_string() )
+   print( '\n\n' )
+
+
+
+
+
+
+
+
+
+for stock in s.stocks:
+   try:
+      sectors.add( stock.sector )
+   except:
+      print( 'failed on %s' % stock.ticker )
+
+
+
+
+
+
+export PYTHONPATH='/Users/kcheng/PersonalProjects/TradingWithCode/src/Analysis:/Users/kcheng/PersonalProjects/TradingWithCode/src/DataCollection/Utils'
+
+
+
+import WebScrapingUtil
+import Stock
+import pandas as pd
+tickers = WebScrapingUtil.getSp500List()
+stocks = []
+for ticker in tickers:
+   stocks.append( Stock.Stock( ticker ) )
+
+
+sectors = set()
+
+for stock in stocks:
+   try:
+      sectors.add( stock.sector )
+   except:
+      print( 'failed on %s' % stock.ticker )
+
+
+
+
+
+
+
+
+Basic Materials
+Communication Services
+Consumer Cyclical
+Consumer Defensive
+Energy
+Financial Services
+Healthcare
+Industrials
+Real Estate
+Technology
+Utilities
+
+
+tickers = []
+for stock in stocks:
+   try:
+      if stock.sector == 'Utilities':
+         tickers.append( stock.ticker )
+   except:
+      print( 'failed on %s' % stock.ticker )
+
+
+
+
+data = {
+    'LongName' : [],
+    'LastClosingPrice' : [],
+    'AllTimeHigh' : [],
+    'PctFrom52WkHigh' : [],
+    'PctFromATH' : [],
+    'DividendYield' : [],
+    'ForwardPE' : [],
+}
+
+
+for ticker in tickers:
+    stock = Stock.Stock( ticker )
+    data[ 'LongName' ].append( stock.longName )
+    data[ 'LastClosingPrice' ].append( stock.lastClosingPrice )
+    data[ 'AllTimeHigh' ].append( stock.allTimeHigh )
+    data[ 'PctFromATH' ].append( stock.pctFromAllTimeHigh )
+    data[ 'PctFrom52WkHigh' ].append( stock.pctFromNDayHigh( 250 ) )
+    data[ 'DividendYield' ].append( stock.dividendYield )
+    data[ 'ForwardPE' ].append( stock.forwardPE )
+
+
+
+df = pd.DataFrame( data, index=tickers )
+df = df.round( 2 )
+df = df.sort_values( by=['PctFrom52WkHigh', 'ForwardPE'] )
+df = df[ df.DividendYield > 1.5 ]
+print( df.to_string() )
+
+
+
+####################################
+
+
+import RawDataUtil
+ticker = 'MSFT'
+RawDataUtil.getDailyPriceCsvFast( ticker )
+
+
+
+import pandas as pd
+dest = './MSFT.csv' 
+existingDf = pd.read_csv( dest )
+lastDateInExistingCsv = existingDf.iloc[-1]['Date']
+
+
+import pandas as pd
+from datetime import datetime, timedelta
+
+df = pd.read_csv( 'MSFT.csv' )
+lastDate = df.iloc[-1]['Date']
+
+
+
+
+x = '2017-05-15'
+res = (datetime.strptime(x, '%Y-%m-%d') + timedelta(days=1)).strftime('%Y-%m-%d')
+
+print(res)
+
+import time
+import yfinance as yf
+ticker = yf.Ticker("WMT")
+
+
+h = ticker.history
+
+start = '2022-12-01'
+t0 = time.time()
+h1 = ticker.history( start=start  )
+t1 = time.time()
+print t1 - t0
+
+
+t0 = time.time()
+h2 = ticker.history( period='max' )
+t1 = time.time()
+print t1 - t0
+
+
+
+start = '2022-12-01'
+t0 = time.time()
+h1 = ticker.history( start=start  )
+t1 = time.time()
+print t1 - t0
+
+t0 = time.time()
+h2 = ticker.history( period='max' )
+t1 = time.time()
+print t1 - t0
+
+
+
+
+
+############################################
+
+import pandas as pd
+import Stock
+
+
+s = Stock.Stock( 'ANET' )
+s.lastClosingPrice, s.n
+s.pctFromNDayHigh( 50 )
+s.nDayPctChange( 2 )
+
+
+############################################
+
+
+
+
+
+
+
+
+import pandas as pd
+import Analysis.Stock as Stock
+import WebScraping.WebScrapingUtils as WebScrapingUtils
+
+
+tickers = WebScrapingUtils.getDividendAristocratList()
+
+
+tickers = WebScrapingUtils.getSp500List()
+stocks = []
+
+for ticker in tickers:
+   stocks.append( Stock.Stock( ticker ) )
+
+rows = []
+for stock in stocks:
+   try:
+      dividendYield = round( stock.dividendYield, 4 ) * 100
+      forwardPE = round( stock.forwardPE, 2 )
+      pctFromAllTimeHigh = round( stock.pctFromAllTimeHigh, 4 ) * 100
+      shortPercentOfFloat = round( stock. shortPercentOfFloat, 4 ) * 100
+      rows.append( [ stock.ticker, forwardPE, dividendYield, pctFromAllTimeHigh, shortPercentOfFloat ] )
+   except:
+      pass 
+      #print 'Failed to show %s' % stock.ticker
+
+
+df = pd.DataFrame( rows, columns=[ 'Ticker', 'ForwardPE', 'DividendYield', 'pctFromAllTimeHigh', 'ShortPercentOfFloat' ] )
+
+
+
+print df.sort_values( by=['pctFromAllTimeHigh'], ascending=False ).to_string()
+
+print df.sort_values( by=['ForwardPE'], ascending=False ).to_string()
+print df.sort_values( by=['DividendYield'] ).to_string()
+
+print df.sort_values( by=['ShortPercentOfFloat'] ).to_string()
+
+
+
+
+
+
+
+import pandas as pd
+import datetime
+
+
+
+startDate = '2000-01-01'
+endDate = datetime.datetime.today().strftime('%Y-%m-%d')
+dates = pd.date_range( startDate, endDate )
+symbols = [ 'AAPL', 'MSFT' ]
+
+
+import Stats
+symbols = [ 'AAPL', 'MSFT' ]
+Stats.getDailyStockPrices( symbols )
+
+
+
+
+symbol = 'WBA'
+df = Stats.getDailyStockPrices( [ symbol ] )
+priceSeries = df[ symbol ]
+lastClosingPrice = priceSeries[-1]
+allTimeHigh = priceSeries.max()
+pctChange = ( lastClosingPrice - allTimeHigh ) / allTimeHigh
+pctChange = pctChange.round( 3 )
+
+print allTimeHigh, lastClosingPrice, pctChange
+
+
+
+
+
+
+
+
+import yfinance as yf
+d = yf.Ticker( 'ANET' ).info
+json.dumps( d, indent=4, sort_keys=True )
+
+
+
+import RawDataUtil
+RawDataUtil.getYahooFinanceInfoDict( 'AMZN' )
+
+
+
+PE Ratio
+Dividend Yield
+Pct change from all-time high
+Growth Rate
+PEG Ratio
+
+
+
+
+
+
+
+
+import Stock
+ticker = 'INTC'
+stock = Stock.Stock( ticker )
+stock.pctFromAllTimeHigh, stock.forwardPE, stock.dividendYield
+
+
+
+

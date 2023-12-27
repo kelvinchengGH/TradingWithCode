@@ -14,12 +14,7 @@ from  pandas import DataFrame
 import yfinance as yf
 
 
-
-############
-# Constants
-############
-
-ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' ) )
+from Util import absolutePathLocator
 
 
 ############
@@ -39,7 +34,8 @@ class Stock( object ):
 
     @cached_property
     def maxHistoryDf( self ) -> DataFrame:
-        filePath = ROOT_DIR + '/data/ProcessedData/DailyClosingPriceCsvs/%s.csv' % self.ticker
+        relativeFilePath = 'data/ProcessedData/DailyClosingPriceCsvs/%s.csv' % self.ticker
+        filePath = absolutePathLocator( relativeFilePath )
         df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
                           na_values=[ 'nan' ] )
         return df
@@ -51,7 +47,8 @@ class Stock( object ):
         # TODO
         #    1. Check if the JSON exists and is up-to-date.
         #    2. If the JSON does not exist or is out of date, update it.
-        filePath = ROOT_DIR + '/data/RawData/YahooFinanceInfo/%s.json' % self.ticker
+        relativeFilePath = 'data/RawData/YahooFinanceInfo/%s.json' % self.ticker
+        filePath = absolutePathLocator( relativeFilePath )
         with open( filePath, 'r' ) as f:
             d = json.load( f )
         return d
@@ -59,14 +56,16 @@ class Stock( object ):
 
     @cached_property
     def fastInfo( self ) -> dict:
-        filePath = ROOT_DIR + '/data/RawData/YahooFinanceFastInfo/%s.json' % self.ticker
+        relativeFilePath = 'data/RawData/YahooFinanceFastInfo/%s.json' % self.ticker
+        filePath = absolutePathLocator( relativeFilePath )
         with open( filePath, 'r' ) as f:
             d = json.load( f )
             return d
 
     @cached_property
     def financialsDf( self ) -> DataFrame:
-        filePath = ROOT_DIR + '/data/RawData/FinacialsFromMacrotrends/%s.csv' % self.ticker
+        relativeFilePath = 'data/RawData/FinacialsFromMacrotrends/%s.csv' % self.ticker
+        filePath = absolutePathLocator( relativeFilePath )
         df = pd.read_csv( filePath, index_col='Year', na_values=[ 'NaN' ] )
         return df
 
@@ -83,48 +82,6 @@ class Stock( object ):
     @property
     def marketCap( self ) -> float:
         return self.fastInfo[ 'marketCap' ]
-
-    @property
-    def marketCapFormatted( self ) -> str:
-        '''
-        Returns a string representing the market cap.
-
-        Some illustrative examples:
-            marketCap    marketCapFormatted
-        -----------------------------------
-        1,234,567,890    1.23T
-               69,420    69.4K
-          123,456,789    123M
-
-        '''
-        # TODO: - Figure out how to sort strings of this form so that
-        #            1.12T > 43.20B > 270.34K > 999.69
-        cap = self.marketCap
-
-        if cap < 1000:
-            return "%.2f" % cap
-
-        orderOfMagnitudeToSuffixMap = {
-            1e3  : "K",
-            1e6  : "M",
-            1e9  : "B",
-            1e12 : "T",
-            1e15 : "Qa",
-            1e18 : "Qi",
-        }
-
-        orders = sorted( orderOfMagnitudeToSuffixMap.keys() )
-        orderOfMagnitude = next( order for order in orders \
-                                 if cap / 1e3 < order )
-        suffix = orderOfMagnitudeToSuffixMap[ orderOfMagnitude ]
-        scaledCap = cap / orderOfMagnitude
-
-        # Keep just 3 significant figures
-        if scaledCap >= 100:
-            return "%d%s" % ( scaledCap, suffix )
-        elif scaledCap >= 10:
-            return "%.1f%s" % ( scaledCap, suffix )
-        return "%.2f%s" % ( scaledCap, suffix )
 
     @property
     def forwardPE( self ) -> float:
@@ -164,7 +121,8 @@ class Stock( object ):
 
         [78 rows x 2 columns]
         '''
-        filePath = ROOT_DIR + '/data/RawData/Dividends/%s.csv' % self.ticker
+        relativeFilePath = 'data/RawData/Dividends/%s.csv' % self.ticker
+        filePath = absolutePathLocator( relativeFilePath )
         df = pd.read_csv( filePath )
         return df
 
@@ -207,7 +165,7 @@ class Stock( object ):
 
     @property
     def lastClosingPrice( self ) -> float:
-        return self.maxHistoryDf[ 'Close' ][-1]
+        return self.maxHistoryDf[ 'Close' ].iloc[-1]
 
     @property
     def pctFromAllTimeHigh( self ) -> float:

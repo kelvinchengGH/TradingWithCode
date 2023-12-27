@@ -1,0 +1,52 @@
+
+import MacrotrendsUtil
+
+tickers = ['AAPL', 'ANET', 'BABA' ]
+metrics = ['net-income', 'revenue', 'eps-earnings-per-share-diluted', 'total-share-holder-equity' ]
+
+
+
+df = MacrotrendsUtil.getDataFrame( tickers, metrics )
+df
+
+
+
+df = pd.DataFrame( dataDict )
+
+
+for ticker in yea
+
+
+from bs4 import BeautifulSoup
+
+ticker = 'BABA'
+metric = 'eps-earnings-per-share-diluted'
+metric = 'net-income'
+metric = 'pe-ratio'
+
+data = MacrotrendsUtil.getPageSource( ticker, metric )                                                
+soup = BeautifulSoup( data, 'html.parser' )                                           
+                                                                                      
+# Find the table with the annual values.                                              
+tables = soup.find_all( 'table' )                                                     
+annualDataTable = tables[ 0 ]
+
+tableHeader = annualDataTable.find('th').text
+print tableHeader
+multiplyByOneMillion = 'Millions of US $' in tableHeader
+
+
+                                                         
+tableRows = annualDataTable.find_all( 'tr' )                                          
+                                                                                      
+# Go through each row of the table ( except the header row ),                         
+# and extract the year and the value.                                                 
+yearToValueMap = {}                                                                   
+for row in tableRows[ 1: ]:                                                           
+   cells = row.find_all( 'td' )                                                       
+   year = int( cells[ 0 ].text )                                                      
+   value = int( re.sub( "[^0-9-]", "", cells[ 1 ].text ) )                            
+   if multiplyByOneMillion:
+      value = value * 1000000 # Macrotrends displays values in millions of dollars.      
+   yearToValueMap[ year ] = value                                                     
+                                                                                      

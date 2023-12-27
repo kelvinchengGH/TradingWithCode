@@ -30,6 +30,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from pandas import DataFrame
 
+
 ################
 ##### CONSTANTS
 ################
@@ -49,10 +50,6 @@ ESSENTIAL_METRICS = [ 'net-income',
                       'cash-flow-from-operating-activities',
                       'eps-earnings-per-share-diluted'
 ]
-
-THIS_DIR = os.path.dirname( __file__ )
-ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../../..' ) )
-FINANCIAL_INFO_DIR = ROOT_DIR + "/data/RawData/FinacialsFromMacrotrends"
 
 
 ################

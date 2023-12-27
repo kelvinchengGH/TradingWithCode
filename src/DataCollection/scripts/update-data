@@ -6,19 +6,17 @@ import multiprocessing as mp
 sys.path.insert( 0, '../Utils' )
 import RawDataUtil
 import WebScrapingUtil
+from Util import absolutePathLocator
 
 ###########
 # Constants
 ###########
-THIS_DIR = os.path.dirname( __file__ )
-ROOT_DIR = os.path.realpath( os.path.join( THIS_DIR, '../../..'\
- ) )
+tickerListPath = absolutePathLocator( 'src/DataCollection/scripts/tickers.txt' )
+csvDestDir = absolutePathLocator( 'data/RawData/DailyPriceCsvs' )
+jsonDestDir = absolutePathLocator( 'data/RawData/YahooFinanceInfo' )
+fastJsonDestDir = absolutePathLocator( 'data/RawData/YahooFinanceFastInfo' )
+dividendDestDir = absolutePathLocator( 'data/RawData/Dividends' )
 
-tickerListPath = THIS_DIR + '/tickers.txt'
-csvDestDir = ROOT_DIR + '/data/RawData/DailyPriceCsvs'
-jsonDestDir = ROOT_DIR + '/data/RawData/YahooFinanceInfo'
-fastJsonDestDir = ROOT_DIR + '/data/RawData/YahooFinanceFastInfo'
-dividendDestDir = ROOT_DIR + '/data/RawData/Dividends'
 NUM_PROCESSES = 1
 
 
@@ -44,7 +42,7 @@ with open( tickerListPath, 'r' ) as f:
 tickers = [ t.strip() for t in tickers ]
 
 
-def fetchData( tickerList ):
+def fetchData( tickerList: list[str] ) -> None:
    for ticker in tickerList:
       csvDest = csvDestDir + '/%s.csv' % ticker
       dividendDest = dividendDestDir + '/%s.csv' % ticker

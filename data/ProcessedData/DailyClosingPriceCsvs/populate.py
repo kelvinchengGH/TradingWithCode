@@ -3,11 +3,13 @@
 import os
 import pandas as pd
 
-THIS_DIR = os.path.dirname( __file__ )
-ROOT_DIR = os.path.realpath( os.path.join( THIS_DIR, '../../..' ) )
-RAW_CSV_DIR = ROOT_DIR + '/data/RawData/DailyPriceCsvs'
+from Util import absolutePathLocator
 
-def createCondensedCsv( ticker ):
+THIS_DIR = os.path.dirname( __file__ )
+RAW_CSV_DIR = absolutePathLocator( 'data/RawData/DailyPriceCsvs' )
+
+
+def createCondensedCsv( ticker: str ) -> None:
     rawCsvPath = RAW_CSV_DIR + '/%s.csv' % ticker
     df = pd.read_csv( rawCsvPath )
     df = df[ [ 'Date', 'Close' ] ]
@@ -16,13 +18,11 @@ def createCondensedCsv( ticker ):
     newCsvPath = THIS_DIR +  '/%s.csv' % ticker
     df.to_csv( newCsvPath, index=False )
 
-def populate():
+def populate() -> None:
     csvList = os.listdir( RAW_CSV_DIR )
     tickers = [ filename[:-4] for filename in csvList if filename.endswith( '.csv' ) ]
     for ticker in tickers:
         createCondensedCsv( ticker )
-    
-
 
 
 if __name__ == '__main__':

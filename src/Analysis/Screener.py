@@ -12,14 +12,7 @@ import pandas as pd
 from pandas import DataFrame
 
 import Stock
-
-
-############
-# Constants
-############
-
-ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' ) )
-
+from Util import absolutePathLocator
 
 ############
 # Functions and Classes
@@ -28,7 +21,8 @@ ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' 
 class Screener( object ):
     def __init__( self, tickers: Optional[list[str]] = None ) -> None:
         if tickers is None:
-            csvDirPath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/'
+            relativeCsvDirPath = 'data/RawData/DailyPriceCsvs/'
+            csvDirPath = absolutePathLocator(relativeCsvDirPath)
             csvs = os.listdir( csvDirPath )
             tickers = [ filename[:-4] for filename in csvs if filename.endswith( '.csv' ) ]
         self.stocks = [ Stock.Stock( t ) for t in sorted( tickers ) ]
