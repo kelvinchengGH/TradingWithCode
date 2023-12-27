@@ -4,9 +4,13 @@
 # Imports
 ############
 
+from typing import Optional
 import os
 from functools import cached_property
+
 import pandas as pd
+from pandas import DataFrame
+
 import Stock
 
 
@@ -22,14 +26,14 @@ ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' 
 ############
 
 class Screener( object ):
-    def __init__( self, tickers=None ):
+    def __init__( self, tickers: Optional[list[str]] = None ) -> None:
         if tickers is None:
             csvDirPath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/'
             csvs = os.listdir( csvDirPath )
             tickers = [ filename[:-4] for filename in csvs if filename.endswith( '.csv' ) ]
         self.stocks = [ Stock.Stock( t ) for t in sorted( tickers ) ]
 
-    def getSectors( self ):
+    def getSectors( self ) -> list[str]:
         sectors = set()
         for stock in self.stocks:
             try:
@@ -54,7 +58,7 @@ class Screener( object ):
     }
 
     @property
-    def df( self ):
+    def df( self ) -> DataFrame:
         # Edit the columns list with the stuff you want to include.
         # Make sure columnTitleToCodeLineMap supports each column.
         columns = [ "LongName",
@@ -96,7 +100,7 @@ class Screener( object ):
 ############
 # main()
 ############
-def main():
+def main() -> None:
     screener = Screener()
     sectors = screener.getSectors()
     print( "*** Sectors of the market:" )

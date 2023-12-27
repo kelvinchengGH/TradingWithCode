@@ -28,6 +28,7 @@ import requests
 from bs4 import BeautifulSoup
 
 import pandas as pd
+from pandas import DataFrame
 
 ################
 ##### CONSTANTS
@@ -58,7 +59,7 @@ FINANCIAL_INFO_DIR = ROOT_DIR + "/data/RawData/FinacialsFromMacrotrends"
 ##### FUNCTIONS
 ################
 
-def getPageSource( ticker, metric ):
+def getPageSource( ticker: str, metric: str ) -> str:
    '''
    Returns a string with the HTML corresponding to the Macrotrends page
    for the given ticker and metric.
@@ -71,6 +72,11 @@ def getPageSource( ticker, metric ):
       If ticker == "JPM" and metric == "net-income",
       then the function returns a string containing the HTML for
       https://www.macrotrends.net/stocks/charts/JPM/jpm/net-income
+
+
+   2023-12-26: As of today, when I try this, I get an error saying
+       "Automated access to our data is prohibited by our data provider."
+   TODO: Find a way past this.
    '''
    tickerStr = "%s/%s" % ( ticker, ticker.lower() )
    url = MACROTRENDS_URL_TEMPLATE % ( tickerStr, metric )
@@ -78,7 +84,7 @@ def getPageSource( ticker, metric ):
    data = r.text
    return data
 
-def getAnnualData( ticker, metric ):
+def getAnnualData( ticker: str, metric: str ) -> dict[int, float]:
    '''
    Returns a dictionary where the key is the year and the value
    is the value of the metric for that year.
@@ -96,6 +102,8 @@ def getAnnualData( ticker, metric ):
       (2006, 14440000000.0)
       (2007, 14924000000.0)
       etc.
+
+   IMPORTANT: Macrotrends only shows roughly the most recent 13 years of data.
    '''
    data = getPageSource( ticker, metric )
    soup = BeautifulSoup( data, 'html.parser' )
@@ -127,7 +135,10 @@ def getAnnualData( ticker, metric ):
 
    return yearToValueMap
 
-def dumpAnnualData( ticker, metric, useCurrencyFormat=False ):
+def dumpAnnualData( ticker: str,
+                    metric: str,
+                    useCurrencyFormat: bool = False
+) -> None:
    '''
    Dumps annual data for the given ticker and metric.
    This is helpful for me when I want to quickly copy/paste data
@@ -154,7 +165,7 @@ def dumpAnnualData( ticker, metric, useCurrencyFormat=False ):
       else:
          print( "%d\t%.2f" % ( year, value ) )
    
-def getDataFrame( tickers, metrics ):
+def getDataFrame( tickers: list[str], metrics: list[str] ) -> DataFrame:
    '''
    Given a list of tickers and a list of metrics, create a DataFrame
    where each row contains the metrics for a given year and a given ticker.
@@ -211,7 +222,7 @@ def getDataFrame( tickers, metrics ):
 
 
 
-def getFinancialsCsv( ticker, dest='' ):
+def getFinancialsCsv( ticker: str, dest: str = '' ) -> int:
    print( "Getting Macrotrends financials info for %s" % ticker )
    try:
       df = getDataFrame( [ ticker ], ESSENTIAL_METRICS )
@@ -230,7 +241,7 @@ def getFinancialsCsv( ticker, dest='' ):
 #################
 ##### MAIN
 #################
-if __name__ == '__main__':
+def main() -> None:
    parser = argparse.ArgumentParser()
    parser.add_argument( '-t', '--tickers', nargs='+', default=[],
                         help="List of ticker symbols separated by spaces." )
@@ -256,3 +267,6 @@ if __name__ == '__main__':
                  str( e ) ) )
             continue
       print
+
+if __name__ == '__main__':
+   main()

@@ -1,7 +1,8 @@
-#!/Users/kelvincheng/anaconda2/bin/python
+from typing import Optional
 
 import numpy as np
 import pandas as pd
+from pandas import DatetimeIndex, DataFrame
 import matplotlib.pyplot as plt
 
 import os
@@ -12,17 +13,17 @@ import yfinance as yf
 
 ### Read in data ###
 csvBaseDir = '../../data/RawData/DailyPriceCsvs/'
-def symbolToCsvPath( symbol, baseDir=csvBaseDir ):
+def symbolToCsvPath( symbol: str, baseDir: str = csvBaseDir ) -> str:
     ''' Return CSV file path for the given ticker symbol. '''
     return os.path.join(baseDir, "{}.csv".format(str(symbol)))
 
 
 jsonBaseDir = '../../data/RawData/YahooFinanceInfo'
-def symbolToJsonPath( symbol, baseDir=jsonBaseDir ):
+def symbolToJsonPath( symbol: str, baseDir: str = jsonBaseDir ) -> str:
     return os.path.join(baseDir, "{}.json".format(str(symbol)))
     
 
-def getDailyStockPrices( symbols, dates=None ):
+def getDailyStockPrices( symbols: list[str], date: Optional[DatetimeIndex] = None ) -> DataFrame:
     """
     Read daily price data from the CSV files for each symbol in the list,
     and return a DataFrame with this data.
@@ -69,13 +70,17 @@ def getDailyStockPrices( symbols, dates=None ):
     return df
 
 
-def getYahooFinanceInfoDict( symbol ):
+def getYahooFinanceInfoDict( symbol: str ) -> dict:
     with open( symbolToJsonPath( symbol ), 'r' ) as f:
         infoDict = json.load( f )
     return infoDict
 
 ### Plot data ### 
-def plotData( df, title='Stock Prices', xlabel='Date', ylabel='Price' ):
+def plotData( df: DataFrame,
+              title: str = 'Stock Prices',
+              xlabel: str = 'Date',
+              ylabel: str = 'Price'
+) -> None:
     ''' Plot stock prices with a custom title and meaningful axis labels. '''
     ax = df.plot( title=title, fontsize=12 )
     ax.set_xlabel( xlabel )
@@ -83,7 +88,7 @@ def plotData( df, title='Stock Prices', xlabel='Date', ylabel='Price' ):
     ax.grid()
     plt.show()
     
-def plotHist( df ):
+def plotHist( df: DataFrame ) -> None:
     ''' 
     Plot overlapping historgrams.
     This is useful for looking at the distribution of daily returns.
@@ -95,18 +100,18 @@ def plotHist( df ):
 
 
 ### Compute statistics on a DataFrame where each column is a stock's daily price ###x
-def dailyReturns( df ):
+def dailyReturns( df: DataFrame ) -> DataFrame:
     ''' Compute and return the daily return values '''
     returns = df.copy()
     returns[1:] = ( df[1:] / df[:-1].values ) - 1
     returns.ix[0,:] = 0
     return returns
 
-def normalizeData( df ):
+def normalizeData( df: DataFrame ) -> DataFrame:
     return df / df.iloc[ 0 ]
 
 
-def movingAverage( df, window ):
+def movingAverage( df: DataFrame, window ):
     ''' 
     df is a table of daily stock prices.
     Returns a table of "window"-day moving averages for each stock in df.
@@ -119,7 +124,11 @@ def movingAverage( df, window ):
     return averages
 
 
-def stockWithMovingAverages( df, symbol, windows=[ 20, 50, 200 ] ):
+def stockWithMovingAverages(
+        df: DataFrame,
+        symbol: str,
+        windows: list[int] = [ 20, 50, 200 ]
+) -> DataFrame:
     ''' 
     From a DataFrame with daily price data for one or more stocks,
     choose one of the stocks and compute one or more moving averages.
@@ -136,7 +145,7 @@ def stockWithMovingAverages( df, symbol, windows=[ 20, 50, 200 ] ):
 
 
 ##### One-off stats #####
-def pctChangeFromAllTimeHigh( symbol ):
+def pctChangeFromAllTimeHigh( symbol: str ) -> float:
     '''
     Takes the last closing price and calculates the percentage
     difference from the all-time high.
@@ -149,16 +158,16 @@ def pctChangeFromAllTimeHigh( symbol ):
     return pctChange
 
 
-def dividendYield( symbol ):
+def dividendYield( symbol: str ) -> float:
     infoDict = getYahooFinanceInfoDict( symbol )
     return infoDict.dividendYield
 
 
-def forwardPE( symbol ):
+def forwardPE( symbol: str ) -> float:
     infoDict = getYahooFinanceInfoDict( symbol )
     return infoDict.forwardPE
 
 
-def showPctChangeFromAllTimeHigh( symbols ):
+def showPctChangeFromAllTimeHigh( symbols: list[str] ) -> None:
     for symbol in symbols:
         pass

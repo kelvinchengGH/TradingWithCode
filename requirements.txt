@@ -1,5 +1,6 @@
 ##### Python modules needed to work with this codebase #####
 requests
+types-requests
 numpy
 pandas
 yfinance

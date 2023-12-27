@@ -1,5 +1,3 @@
-#!/Library/Frameworks/Python.framework/Versions/3.7/bin/python3
-#
 # Utilities to collect raw data from the Internet
 
 
@@ -89,7 +87,7 @@ def getDailyPriceCsv( ticker: str, dest: str = '' ) -> int:
    return 0
 
 
-def getDailyPriceCsvFast( ticker: str, dest: str = '' ) -> None:
+def getDailyPriceCsvFast( ticker: str, dest: str = '' ) -> int:
    if not dest:
       dest = './%s.csv' % ticker
 
@@ -105,7 +103,7 @@ def getDailyPriceCsvFast( ticker: str, dest: str = '' ) -> None:
 
    if isMostRecentWeekday( lastDateInExistingCsv ):
       print( "Daily price data for %s is already up-to-date" % ticker )
-      return
+      return 0
 
    # Fetch Yahoo Finance data into a Python DataFrame, starting
    # from the date after the last date in our existing CSV.

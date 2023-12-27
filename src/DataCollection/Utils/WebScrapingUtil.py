@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 ############
 ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' ) )
 
-def getHtmlSoup( url: str ) -> bs4.BeautifulSoup:
+def getHtmlSoup( url: str ) -> BeautifulSoup:
     cmd = [ "curl", "-s", url ]
     output = subprocess.check_output( cmd )
     return BeautifulSoup( output, 'html.parser' )

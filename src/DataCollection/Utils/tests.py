@@ -11,7 +11,7 @@ import tempfile, os
 import MacrotrendsUtil
 import RawDataUtil
 
-def testMacrotrendsUtil():
+def testMacrotrendsUtil() -> None:
     ticker = 'AAPL'
     metric = 'net-income'
     html = MacrotrendsUtil.getPageSource( ticker, metric )
@@ -23,7 +23,7 @@ def testMacrotrendsUtil():
     print( df.head() )
     
 
-def testRawDataUtil():
+def testRawDataUtil() -> None:
     # Get CSV for ANET
     # Get JSON for ANET
     # Read dataframe for ANET
@@ -34,7 +34,8 @@ def testRawDataUtil():
     RawDataUtil.getYahooFinanceInfoDict( ticker, jsonFile )
     os.system( 'rm %s %s' % ( csvFile, jsonFile ) )
 
-if __name__ == '__main__':
+
+def main() -> None:
     testList = [
         testRawDataUtil,
         testMacrotrendsUtil
@@ -61,3 +62,5 @@ if __name__ == '__main__':
         print( "*** ALL TESTS PASSED!" )
    
 
+if __name__ == '__main__':
+    main()
