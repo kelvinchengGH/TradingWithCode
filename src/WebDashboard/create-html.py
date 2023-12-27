@@ -65,4 +65,3 @@ newHtmlText = origHtmlText.replace( '<!--PLACEHOLDER: StockDataFrame table -->',
 newHtmlPath = THIS_DIR + '/index.html'
 with open( newHtmlPath, 'w' ) as f:
     f.write( newHtmlText )
-

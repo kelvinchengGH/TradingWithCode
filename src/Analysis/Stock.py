@@ -21,7 +21,7 @@ from Util import absolutePathLocator
 # Stock
 ############
 
-class Stock( object ):
+class Stock:
     def __init__( self, ticker: str ) -> None:
         self.ticker = ticker
         self.yfTicker = yf.Ticker( ticker )

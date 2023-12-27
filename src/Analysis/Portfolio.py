@@ -10,7 +10,7 @@ import Stats
 #################
 # Portfolio
 #################
-class Portfolio( object ):
+class Portfolio:
     def __init__(
             self,
             startVal: int,

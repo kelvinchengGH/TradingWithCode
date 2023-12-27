@@ -14,11 +14,12 @@ from pandas import DataFrame
 import Stock
 from Util import absolutePathLocator
 
+
 ############
 # Functions and Classes
 ############
 
-class Screener( object ):
+class Screener:
     def __init__( self, tickers: Optional[list[str]] = None ) -> None:
         if tickers is None:
             relativeCsvDirPath = 'data/RawData/DailyPriceCsvs/'
