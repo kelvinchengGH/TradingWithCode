@@ -4,10 +4,15 @@
 # Imports
 ############
 
+from typing import Callable
+
 import os, datetime, json
-import pandas as pd
-import yfinance as yf
 from functools import cached_property
+
+import pandas as pd
+from  pandas import DataFrame
+import yfinance as yf
+
 
 
 ############
@@ -22,18 +27,18 @@ ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' 
 ############
 
 class Stock( object ):
-    def __init__( self, ticker ):
+    def __init__( self, ticker: str ) -> None:
         self.ticker = ticker
         self.yfTicker = yf.Ticker( ticker )
         self.csvFile = ''
 
     @property
-    def history( self ):
+    def history( self ) -> Callable:
         # Returns the yfTicker's history method
         return self.yfTicker.history
 
     @cached_property
-    def maxHistoryDf( self ):
+    def maxHistoryDf( self ) -> DataFrame:
         filePath = ROOT_DIR + '/data/ProcessedData/DailyClosingPriceCsvs/%s.csv' % self.ticker
         df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
                           na_values=[ 'nan' ] )
@@ -41,7 +46,7 @@ class Stock( object ):
         # return self.history( period='max' )
 
     @cached_property
-    def info( self ):
+    def info( self ) -> dict:
         # Returns the yfTicker's info dict
         # TODO
         #    1. Check if the JSON exists and is up-to-date.
@@ -53,34 +58,34 @@ class Stock( object ):
         # return self.yfTicker.info
 
     @cached_property
-    def fastInfo( self ):
+    def fastInfo( self ) -> dict:
         filePath = ROOT_DIR + '/data/RawData/YahooFinanceFastInfo/%s.json' % self.ticker
         with open( filePath, 'r' ) as f:
             d = json.load( f )
             return d
 
     @cached_property
-    def financialsDf( self ):
+    def financialsDf( self ) -> DataFrame:
         filePath = ROOT_DIR + '/data/RawData/FinacialsFromMacrotrends/%s.csv' % self.ticker
         df = pd.read_csv( filePath, index_col='Year', na_values=[ 'NaN' ] )
         return df
 
     ##### Basic Attributes #####
     @property
-    def longName( self ):
+    def longName( self ) -> str:
         return self.info[ 'longName' ]
 
     @property
-    def shares( self ):
+    def shares( self ) -> int:
         ''' Shares Outstanding '''
         return self.fastInfo[ 'shares' ]
 
     @property
-    def marketCap( self ):
+    def marketCap( self ) -> float:
         return self.fastInfo[ 'marketCap' ]
 
     @property
-    def marketCapFormatted( self ):
+    def marketCapFormatted( self ) -> str:
         '''
         Returns a string representing the market cap.
 
@@ -97,7 +102,7 @@ class Stock( object ):
         cap = self.marketCap
 
         if cap < 1000:
-            return ".2f" % cap
+            return "%.2f" % cap
 
         orderOfMagnitudeToSuffixMap = {
             1e3  : "K",
@@ -122,7 +127,7 @@ class Stock( object ):
         return "%.2f%s" % ( scaledCap, suffix )
 
     @property
-    def forwardPE( self ):
+    def forwardPE( self ) -> float:
         '''
         "forwardPE" is the metric that yfinance would provide, but
         since we can't access it now, we just return an estimate of the PE ratio
@@ -139,7 +144,7 @@ class Stock( object ):
         # return self.info[ 'forwardPE' ]
 
     @cached_property
-    def dividends( self ):
+    def dividends( self ) -> DataFrame:
         '''
         Return a Pandas Dataframe with the past dividends.
         >>> s = Stock.Stock( 'AAPL' )
@@ -164,7 +169,7 @@ class Stock( object ):
         return df
 
     @property
-    def oneYearDividendTotal( self ):
+    def oneYearDividendTotal( self ) -> float:
         '''
         The sum of the dividends paid out in the last year.
         '''
@@ -176,7 +181,7 @@ class Stock( object ):
         return oneYearDividendTotal
 
     @property
-    def dividendYield( self ):
+    def dividendYield( self ) -> float:
         # Need to manually compute the dividendYield because
         # yfinance's "info" feature is blocked.
         # res = self.info[ 'dividendYield' ]
@@ -184,66 +189,66 @@ class Stock( object ):
         return 100.0 * self.oneYearDividendTotal / self.lastClosingPrice
 
     @property
-    def shortPercentOfFloat( self ):
+    def shortPercentOfFloat( self ) -> float:
         return self.info[ 'shortPercentOfFloat' ]
 
     @property
-    def sector( self ):
+    def sector( self ) -> str:
         return self.info[ 'sector' ]
     
     ##### Basic Price Metrics #####
     @property
-    def allTimeHigh( self ):
+    def allTimeHigh( self ) -> float:
         return self.maxHistoryDf[ 'Close' ].max()
 
     @property
-    def allTimeLow( self ):
+    def allTimeLow( self ) -> float:
         return self.maxHistoryDf[ 'Close' ].min()
 
     @property
-    def lastClosingPrice( self ):
+    def lastClosingPrice( self ) -> float:
         return self.maxHistoryDf[ 'Close' ][-1]
 
     @property
-    def pctFromAllTimeHigh( self ):
+    def pctFromAllTimeHigh( self ) -> float:
         return 100 * ( self.lastClosingPrice - self.allTimeHigh ) / self.allTimeHigh
     
     ##### Intermediate Price Metrics #####
-    def nDayHigh( self, n ):
+    def nDayHigh( self, n: int ) -> float:
         idx = -1 * n
         return self.maxHistoryDf[ 'Close' ].iloc[ idx: ].max()
 
-    def nDayLow( self, n ):
+    def nDayLow( self, n: int ) -> float:
         idx = -1 * n
         return self.maxHistoryDf[ 'Close' ].iloc[ idx: ].min()
 
-    def pctFromNDayHigh( self, n ):
+    def pctFromNDayHigh( self, n: int ) -> float:
         high = self.nDayHigh( n )
         return 100 * ( self.lastClosingPrice - high ) / high
 
-    def pctFromNDayLow( self, n ):
+    def pctFromNDayLow( self, n: int ) -> float:
         low = self.nDayLow( n )
         return 100 * ( self.lastClosingPrice - low ) / low
 
-    def nDayReturn( self, n ):
+    def nDayReturn( self, n: int ) -> float:
         idx = -1 * ( n + 1 )
         oldPrice = self.maxHistoryDf[ 'Close' ].iloc[ idx ]
         return 100 * ( self.lastClosingPrice - oldPrice ) / oldPrice
 
-    def nYearReturn( self, n ):
+    def nYearReturn( self, n: int ) -> float:
         # TODO: Fill me in
         return 0
 
     @property
-    def ytdReturn( self ):
+    def ytdReturn( self ) -> float:
         # TODO: Fill me in
         return 0
 
 ############
 # main()
 ############
-def main():
-    data = {
+def main() -> None:
+    data: dict[str, list] = {
         'LastClosingPrice' : [],
         'AllTimeHigh' : [],
         'PctFromATH' : [],

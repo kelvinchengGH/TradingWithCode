@@ -17,7 +17,7 @@ import json
 # HELPER FUNCTIONS
 ##################
 
-def shiftDateStr( dateStr, nDays ):
+def shiftDateStr( dateStr: str, nDays: int ) -> datetime.datetime:
    '''
    Shift the date by nDays.
    return the date string for the following day.
@@ -30,7 +30,7 @@ def shiftDateStr( dateStr, nDays ):
             datetime.timedelta( days=nDays ) ).strftime('%Y-%m-%d')
 
 
-def isMostRecentWeekday( dateStr ):
+def isMostRecentWeekday( dateStr: str ) -> bool:
    '''
    Returns whether the dateStr is equal to the most recent weekday.
 
@@ -50,7 +50,7 @@ def isMostRecentWeekday( dateStr ):
 # FUNCTIONS
 ##################
 
-def getTickerList( tickerListPath ):
+def getTickerList( tickerListPath: str ) -> list[str]:
    '''
    Read list of ticker symbols from text file.
 
@@ -63,7 +63,7 @@ def getTickerList( tickerListPath ):
    return tickers
    
 
-def getDailyPriceCsv( ticker, dest='' ):
+def getDailyPriceCsv( ticker: str, dest: str = '' ) -> int:
    '''
    Get daily price info for a stock in csv format.
    
@@ -89,7 +89,7 @@ def getDailyPriceCsv( ticker, dest='' ):
    return 0
 
 
-def getDailyPriceCsvFast( ticker, dest='' ):
+def getDailyPriceCsvFast( ticker: str, dest: str = '' ) -> None:
    if not dest:
       dest = './%s.csv' % ticker
 
@@ -101,7 +101,7 @@ def getDailyPriceCsvFast( ticker, dest='' ):
       # A valid CSV does not already exist,
       # so download the whole CSV.
       getDailyPriceCsv( ticker, dest )
-      return
+      return 0
 
    if isMostRecentWeekday( lastDateInExistingCsv ):
       print( "Daily price data for %s is already up-to-date" % ticker )
@@ -133,10 +133,10 @@ def getDailyPriceCsvFast( ticker, dest='' ):
 
    # Clean up temporary file.
    os.system( 'rm %s' % tempFilename )
-   return
+   return 0
 
 
-def getYahooFinanceInfoDict( ticker, dest='' ):
+def getYahooFinanceInfoDict( ticker: str, dest: str = '' ) -> int:
    '''
    Fetch dictionary of info and metrics for the given ticker,
    and save it in a JSON.
@@ -158,7 +158,7 @@ def getYahooFinanceInfoDict( ticker, dest='' ):
    return 0
 
 
-def getYahooFinanceFastInfo( ticker, dest='' ):
+def getYahooFinanceFastInfo( ticker: str, dest: str = '' ) -> int:
    '''
    Fetch dictionary of fast_info and metrics for the given ticker,
    and save it in a JSON.
@@ -180,7 +180,7 @@ def getYahooFinanceFastInfo( ticker, dest='' ):
    return 0
 
 
-def getDividendsCsv( ticker, dest='' ):
+def getDividendsCsv( ticker: str, dest: str = '' ) -> int:
    if not dest:
       dest = './%s.csv' % ticker
 
@@ -198,7 +198,7 @@ def getDividendsCsv( ticker, dest='' ):
    return 0
 
 
-def getQuarterlyFinancialCsv( stock, destDir ):
+def getQuarterlyFinancialCsv( stock: str, destDir: str ) -> None:
    ''' Get quarterly financial info for a stock into a csv file '''
 
    # Work in-progress

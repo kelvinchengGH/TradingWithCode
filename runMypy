@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+# --strict: enable this periodically to get things super clean
+# mypy src --show-error-codes --strict
+
+# --no-incremental because --config-file above messes with things
+mypy src --follow-imports normal --show-error-codes --no-incremental --disallow-untyped-defs

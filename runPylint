@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+PYTHONPATH=. pylint --output-format=colorized **/*.py

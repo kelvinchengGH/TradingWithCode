@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+from typing import Callable
 import os, subprocess
 from bs4 import BeautifulSoup
 
@@ -8,13 +9,13 @@ from bs4 import BeautifulSoup
 ############
 ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' ) )
 
-def getHtmlSoup( url ):
+def getHtmlSoup( url: str ) -> bs4.BeautifulSoup:
     cmd = [ "curl", "-s", url ]
     output = subprocess.check_output( cmd )
     return BeautifulSoup( output, 'html.parser' )
 
 
-def getDividendAristocratList():
+def getDividendAristocratList() -> list[str]:
     '''
     Return a list of tickers for the S&P 500 Dividend Aristocrats.
     '''
@@ -29,7 +30,7 @@ def getDividendAristocratList():
     return sorted( result )
 
 
-def getSp500List():
+def getSp500List() -> list[str]:
     '''
     Return a list of tickers for the stocks in the S&P 500.
     '''
@@ -44,7 +45,7 @@ def getSp500List():
     return sorted( result )
 
 
-def getNasdaq100List():
+def getNasdaq100List() -> list[str]:
     '''
     Return a list of tickers for the stocks in the Nasdaq 100.
     '''
@@ -59,7 +60,7 @@ def getNasdaq100List():
     return sorted( result )
 
 
-def getDowJonesList():
+def getDowJonesList() -> list[str]:
     '''
     Return a list of tickers for the stocks in the 
     Dow Jones Industrial Average.
@@ -79,14 +80,14 @@ def getDowJonesList():
 ###########
 # main()
 ###########
-def testFunc( func ):
+def testFunc( func: Callable ) -> None:
     tickers = func()
     print( "*** %s() output ***" % func.__name__ )
     print( ", ".join( tickers ) )
     print()
 
 
-def main():
+def main() -> None:
     funcs = [
         getDividendAristocratList,
         getSp500List,

@@ -249,7 +249,7 @@ if __name__ == '__main__':
             dumpAnnualData( ticker, metric,
                             useCurrencyFormat=args.useCurrencyFormat )
             print()            
-         except urllib2.HTTPError as e:
+         except Exception as e:
             print( "[ERROR] Failed to get data for %s %s: %s" % \
                ( ticker,
                  metricWithDashesRemoved,

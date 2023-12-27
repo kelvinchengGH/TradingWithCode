@@ -1,9 +1,8 @@
-#A!/Users/kelvincheng/anaconda2/bin/python
+import os, math, datetime
 
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-import os, math
 
 import Stats
 
@@ -12,7 +11,14 @@ import Stats
 # Portfolio
 #################
 class Portfolio( object ):
-    def __init__( self, startVal, startDate, endDate, symbols, allocs ):
+    def __init__(
+            self,
+            startVal: int,
+            startDate: datetime.datetime|str,
+            endDate: datetime.datetime|str,
+            symbols: list[str],
+            allocs: list[float]
+    ) -> None:
 
         # Some checks for legitimate arguments
         if len( symbols ) != len( allocs ):

@@ -22,10 +22,11 @@ ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' 
 ############
 
 class Screener( object ):
-    def __init__( self ):
-        csvDirPath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/'
-        csvs = os.listdir( csvDirPath )
-        tickers = [ filename[:-4] for filename in csvs if filename.endswith( '.csv' ) ]
+    def __init__( self, tickers=None ):
+        if tickers is None:
+            csvDirPath = ROOT_DIR + '/data/RawData/DailyPriceCsvs/'
+            csvs = os.listdir( csvDirPath )
+            tickers = [ filename[:-4] for filename in csvs if filename.endswith( '.csv' ) ]
         self.stocks = [ Stock.Stock( t ) for t in sorted( tickers ) ]
 
     def getSectors( self ):
