@@ -3,6 +3,7 @@ requests
 types-requests
 numpy
 pandas
+pandas-stubs
 yfinance
 bs4
 mypy
