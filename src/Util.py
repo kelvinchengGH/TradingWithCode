@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import os
-
+import os, time
+import requests
+from selenium import webdriver
 
 
 # Base directory of the repository
@@ -50,3 +51,25 @@ def formatDollarValue( value: float ) -> str:
     elif scaledValue >= 10:
         return "%.1f%s" % ( scaledValue, suffix )
     return "%.2f%s" % ( scaledValue, suffix )
+
+
+def getPageSourceUsingRequests( url: str ) -> str:
+    '''
+    Given a URL, return the HTML source code for that webpage.
+    '''
+    return requests.get( url ).text
+
+def getPageSourceUsingSelenium( url: str ) -> str:
+    '''
+    Sometimes websites have bot-blockers that don't let me
+    scrape them with requests.get(), but using Selenium
+    lets me get around the issue.
+
+    NOTE: In my testing, this can be very slow. Further efforts
+          will be needed to make this faster and more reliable.
+    '''
+    driver = webdriver.Chrome()
+    driver.get( url )
+    pageSource = driver.page_source
+    driver.close()
+    return pageSource

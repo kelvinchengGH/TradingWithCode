@@ -8,3 +8,4 @@ yfinance
 bs4
 mypy
 pylint
+selenium

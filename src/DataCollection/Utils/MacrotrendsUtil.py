@@ -24,12 +24,12 @@ Tools for scraping and parsing data from Macrotrends.
 import os, re
 import argparse
 
-import requests
 from bs4 import BeautifulSoup
 
 import pandas as pd
 from pandas import DataFrame
 
+from Util import getPageSourceUsingSelenium
 
 ################
 ##### CONSTANTS
@@ -77,9 +77,8 @@ def getPageSource( ticker: str, metric: str ) -> str:
    '''
    tickerStr = "%s/%s" % ( ticker, ticker.lower() )
    url = MACROTRENDS_URL_TEMPLATE % ( tickerStr, metric )
-   r = requests.get( url )
-   data = r.text
-   return data
+   return getPageSourceUsingSelenium( url )
+
 
 def getAnnualData( ticker: str, metric: str ) -> dict[int, float]:
    '''
