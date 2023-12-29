@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 '''
 Unit tests to make sure the code works properly.
@@ -15,7 +15,6 @@ from DataCollectionLib import MacrotrendsUtil, RawDataUtil
 
 
 
-
 def testYfinance() -> None:
     ticker = 'AAPL'
     yfTicker = yf.Ticker( ticker )
@@ -23,13 +22,16 @@ def testYfinance() -> None:
 
     currentPrice = info[ 'currentPrice' ]
     print( '%s Current Price: $%.2f\n' % ( ticker, currentPrice ) )
+
+    dividendDf = yfTicker.dividends
     print( '%s Dividend History:' % ticker )
-    print( yfTicker.dividends )
+    print( dividendDf[-4:] )
     print()
     
     df = yfTicker.history( period='1wk' )
     print( '%s 1-Week Price History:' % ticker )
     print( df )
+    print()
 
 
 def testMacrotrendsUtil() -> None:
@@ -51,7 +53,9 @@ def testGetDailyPriceCsv() -> None:
     df = pd.read_csv( csvFile )
     print( "Truncated %s Price History Read From CSV:" % ticker )
     print( df[-4:] )
+    print()
     os.system( 'rm %s' % csvFile )
+
 
 def testGetYahooFinanceInfoDict() -> None:
     ticker = 'MSFT'
@@ -64,6 +68,7 @@ def testGetYahooFinanceInfoDict() -> None:
     truncatedInfo = { k: info[k] for k in list(info.keys())[:numKeys] }
     print( "Truncated %s Info Read From JSON:" % ticker ) 
     print( json.dumps( truncatedInfo, indent=4 ) )
+    print()
     os.system( 'rm %s' % jsonFile )
     
 
@@ -89,7 +94,7 @@ def main() -> None:
             failedTests.append( testName )
         else:
             print( "[TEST PASSED] %s" % testName )
-        print( '\n' )
+        print( '-' * 85 )
 
     if failedTests:
         print( "*** The following tests failed:" )
