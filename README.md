@@ -22,4 +22,12 @@ source start-venv.sh
 ```
 
 ## Quick Start
-TODO: Fill Me In
+Once you've got your environment set-up, run the following to download the latest info into the `data` directory and generate a webpage at `src/WebDashboardUtil/index.html`.
+```
+./update-all
+```
+
+Then open up the webpage in your browser by running
+```
+open src/WebDashboardUtil/index.html
+```
