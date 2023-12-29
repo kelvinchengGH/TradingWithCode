@@ -1,4 +1,4 @@
 # Use "source ./start-venv.sh" to 
 
 source ./.venv/bin/activate
-export PYTHONPATH="$PYTHONPATH:$PWD/src:$PWD/src/Analysis:$PWD/src/DataCollection/Utils"
+export PYTHONPATH="$PYTHONPATH:$PWD/src"

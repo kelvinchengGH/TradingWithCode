@@ -3,7 +3,7 @@
 import os
 import pandas as pd
 
-from Util import absolutePathLocator
+from UtilLib.Util import absolutePathLocator
 
 THIS_DIR = os.path.dirname( __file__ )
 RAW_CSV_DIR = absolutePathLocator( 'data/RawData/DailyPriceCsvs' )

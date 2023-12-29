@@ -14,9 +14,9 @@ def runScript( cmd ):
     os.system( cmd )
 
 
-runScript( './src/DataCollection/scripts/update-data' )
+runScript( './src/DataCollectionLib/scripts/update-data' )
 runScript( './data/ProcessedData/DailyClosingPriceCsvs/populate.py' )
-runScript( './src/WebDashboard/create-html.py' )
+runScript( './src/WebDashboardLib/create-html.py' )
 
 
 print( "\n*** Done! ***" )

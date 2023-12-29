@@ -29,7 +29,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 from pandas import DataFrame
 
-from Util import getPageSourceUsingSelenium
+from UtilLib.Util import getPageSourceUsingSelenium
 
 ################
 ##### CONSTANTS

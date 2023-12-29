@@ -14,7 +14,7 @@ from pandas import DataFrame
 import yfinance as yf
 
 
-from Util import absolutePathLocator
+from UtilLib.Util import absolutePathLocator
 
 
 ############
@@ -102,7 +102,7 @@ class Stock:
     @cached_property
     def fastInfo( self ) -> dict:
         if not self.useLiveStatus:
-            self.history.fastInfo
+            return self.history.fastInfo
         try:
             return self.liveStatus.fastInfo
         except Exception as e:

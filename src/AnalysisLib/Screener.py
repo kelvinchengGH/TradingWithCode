@@ -11,8 +11,8 @@ from functools import cached_property
 import pandas as pd
 from pandas import DataFrame
 
-import Stock
-from Util import absolutePathLocator
+from AnalysisLib import Stock
+from UtilLib.Util import absolutePathLocator
 
 
 ############
@@ -20,13 +20,13 @@ from Util import absolutePathLocator
 ############
 
 class Screener:
-    def __init__( self, tickers: Optional[list[str]] = None ) -> None:
+    def __init__( self, tickers: Optional[list[str]] = None, useLiveStatus: bool = False ) -> None:
         if tickers is None:
             relativeCsvDirPath = 'data/RawData/DailyPriceCsvs/'
-            csvDirPath = absolutePathLocator(relativeCsvDirPath)
+            csvDirPath = absolutePathLocator( relativeCsvDirPath )
             csvs = os.listdir( csvDirPath )
             tickers = [ filename[:-4] for filename in csvs if filename.endswith( '.csv' ) ]
-        self.stocks = [ Stock.Stock( t ) for t in sorted( tickers ) ]
+        self.stocks = [ Stock.Stock( t, useLiveStatus ) for t in sorted( tickers ) ]
 
     def getSectors( self ) -> list[str]:
         sectors = set()

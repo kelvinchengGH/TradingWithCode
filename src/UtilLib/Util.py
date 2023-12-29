@@ -6,7 +6,7 @@ from selenium import webdriver
 
 
 # Base directory of the repository
-BASE_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '..' ) )
+BASE_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' ) )
 
 
 def absolutePathLocator( relativePath: str ) -> str:

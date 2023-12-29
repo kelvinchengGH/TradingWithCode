@@ -3,15 +3,15 @@
 import sys, os
 import numpy as np
 import multiprocessing as mp
-sys.path.insert( 0, '../Utils' )
-import RawDataUtil
-import WebScrapingUtil
-from Util import absolutePathLocator
+
+from DataCollectionLib import RawDataUtil
+from DataCollectionLib import WebScrapingUtil
+from UtilLib.Util import absolutePathLocator
 
 ###########
 # Constants
 ###########
-tickerListPath = absolutePathLocator( 'src/DataCollection/scripts/tickers.txt' )
+tickerListPath = absolutePathLocator( 'src/DataCollectionLib/scripts/tickers.txt' )
 csvDestDir = absolutePathLocator( 'data/RawData/DailyPriceCsvs' )
 jsonDestDir = absolutePathLocator( 'data/RawData/YahooFinanceInfo' )
 fastJsonDestDir = absolutePathLocator( 'data/RawData/YahooFinanceFastInfo' )

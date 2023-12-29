@@ -8,7 +8,7 @@ Take the template HTML file, and add in the missing stuff.
 # Imports
 ###########
 import os
-import Screener
+from AnalysisLib import Screener
 
 
 ###########
