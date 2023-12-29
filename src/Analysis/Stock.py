@@ -10,7 +10,7 @@ import os, datetime, json
 from functools import cached_property
 
 import pandas as pd
-from  pandas import DataFrame
+from pandas import DataFrame
 import yfinance as yf
 
 
@@ -21,38 +21,43 @@ from Util import absolutePathLocator
 # Stock
 ############
 
-class Stock:
-    def __init__( self, ticker: str ) -> None:
-        self.ticker = ticker
-        self.yfTicker = yf.Ticker( ticker )
-        self.csvFile = ''
-
-    @property
-    def history( self ) -> Callable:
-        # Returns the yfTicker's history method
-        return self.yfTicker.history
-
-    @cached_property
-    def maxHistoryDf( self ) -> DataFrame:
-        relativeFilePath = 'data/ProcessedData/DailyClosingPriceCsvs/%s.csv' % self.ticker
-        filePath = absolutePathLocator( relativeFilePath )
-        df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
-                          na_values=[ 'nan' ] )
-        return df
-        # return self.history( period='max' )
+class LiveStatus:
+    """
+    Provides the latest data directly from Yahoo! Finance
+    """
+    def __init__( self, yfTicker: yf.Ticker ) -> None:
+        self.yfTicker = yfTicker
 
     @cached_property
     def info( self ) -> dict:
-        # Returns the yfTicker's info dict
-        # TODO
-        #    1. Check if the JSON exists and is up-to-date.
-        #    2. If the JSON does not exist or is out of date, update it.
+        return self.yfTicker.info
+
+    @cached_property
+    def fastInfo( self ) -> dict:
+        return dict(self.yfTicker.fast_info)
+
+    @cached_property
+    def maxHistoryDf( self ) -> DataFrame:
+        return self.yfTicker.history( period='max' )
+
+
+class History:
+    """
+    Contains historical data read from local files.
+
+    This can be helpful if you're offline or if the Yahoo! Finance API
+    behavior changes unexpectedly.
+    """
+    def __init__( self, ticker: str ) -> None:
+        self.ticker = ticker
+
+    @cached_property
+    def info( self ) -> dict:
         relativeFilePath = 'data/RawData/YahooFinanceInfo/%s.json' % self.ticker
         filePath = absolutePathLocator( relativeFilePath )
         with open( filePath, 'r' ) as f:
             d = json.load( f )
         return d
-        # return self.yfTicker.info
 
     @cached_property
     def fastInfo( self ) -> dict:
@@ -61,6 +66,56 @@ class Stock:
         with open( filePath, 'r' ) as f:
             d = json.load( f )
             return d
+
+    @cached_property
+    def maxHistoryDf( self ) -> DataFrame:
+        relativeFilePath = 'data/ProcessedData/DailyClosingPriceCsvs/%s.csv' % self.ticker
+        filePath = absolutePathLocator( relativeFilePath )
+        df = pd.read_csv( filePath, index_col='Date', parse_dates=True,
+                          na_values=[ 'nan' ] )
+        return df
+
+class Stock:
+    def __init__( self, ticker: str, useLiveStatus: bool = False ) -> None:
+        """
+        useLiveStatus specifies if you want to fetch the latest data 
+        using Yahoo! Finance.
+           - I make it False by default because fetching the latest data 
+             this way can be slow.
+        """
+        self.ticker = ticker
+        self.yfTicker = yf.Ticker( ticker )
+
+        self.useLiveStatus = useLiveStatus
+        self.liveStatus = LiveStatus( self.yfTicker )
+        self.history = History( ticker )
+
+    @cached_property
+    def info( self ) -> dict:
+        if not self.useLiveStatus:
+            return self.history.info
+        try:
+            return self.liveStatus.info
+        except Exception as e:
+            return self.history.info
+
+    @cached_property
+    def fastInfo( self ) -> dict:
+        if not self.useLiveStatus:
+            self.history.fastInfo
+        try:
+            return self.liveStatus.fastInfo
+        except Exception as e:
+            return self.history.fastInfo
+
+    @cached_property
+    def maxHistoryDf( self ) -> DataFrame:
+        if not self.useLiveStatus:
+            return self.history.maxHistoryDf
+        try:
+            return self.liveStatus.maxHistoryDf
+        except Exception as e:
+            return self.history.maxHistoryDf
 
     @cached_property
     def financialsDf( self ) -> DataFrame:
@@ -98,7 +153,6 @@ class Stock:
             return self.lastClosingPrice / mostRecentYearsEarnings
         except:
             return -1
-        # return self.info[ 'forwardPE' ]
 
     @cached_property
     def dividends( self ) -> DataFrame:
