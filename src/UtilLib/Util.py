@@ -13,6 +13,35 @@ def absolutePathLocator( relativePath: str ) -> str:
     return os.path.normpath(os.path.join(BASE_DIR, relativePath)) 
 
 
+def shiftDateStr( dateStr: str, nDays: int ) -> str:
+   '''
+   Shift the date by nDays.
+   return the date string for the following day.
+
+   Keyword arguments:
+      dateStr -- Date string the form 'YYYY-MM-DD'
+      nDays   -- Integer-valued shift.
+   '''
+   return ( datetime.datetime.strptime( dateStr, '%Y-%m-%d' ) + \
+            datetime.timedelta( days=nDays ) ).strftime( '%Y-%m-%d' )
+
+
+def isMostRecentWeekday( dateStr: str ) -> bool:
+   '''
+   Returns whether the dateStr is equal to the most recent weekday.
+
+   TODO: Handle holidays?
+
+   Keyword arguments:
+      dateStr -- Date string the form 'YYYY-MM-DD'
+   '''
+   today = datetime.datetime.today()
+   todayStr = today.strftime( '%Y-%m-%d' )
+   return dateStr == todayStr \
+      or today.weekday() == 5 and dateStr == shiftDateStr( todayStr, -1 ) \
+      or today.weekday() == 6 and dateStr == shiftDateStr( todayStr, -2 )
+
+
 def formatDollarValue( value: float ) -> str:
     '''
     Returns a string representing the market cap.
@@ -52,6 +81,18 @@ def formatDollarValue( value: float ) -> str:
         return "%.1f%s" % ( scaledValue, suffix )
     return "%.2f%s" % ( scaledValue, suffix )
 
+
+def getTickerList( tickerListPath: str ) -> list[str]:
+   '''
+   Read list of ticker symbols from text file.
+
+   Keyword arguments:
+      stockListPath -- Path to the list of tickers
+   '''
+   with open( tickerListPath, 'r' ) as f:
+      tickers = f.readlines()
+   tickers = [ t.strip() for t in tickers ]
+   return tickers
 
 def getPageSourceUsingRequests( url: str ) -> str:
     '''

@@ -1,4 +1,4 @@
-# Utilities to collect raw data from the Internet
+# Utilities to collect raw data from the Internet and save them into files.
 
 
 ##################
@@ -10,56 +10,13 @@ import datetime
 import os, subprocess
 import json
 
+from UtilLib import Util
 
-##################
-# HELPER FUNCTIONS
-##################
-
-def shiftDateStr( dateStr: str, nDays: int ) -> datetime.datetime:
-   '''
-   Shift the date by nDays.
-   return the date string for the following day.
-
-   Keyword arguments:
-      dateStr -- Date string the form 'YYYY-MM-DD'
-      nDays   -- Integer-valued shift.
-   '''
-   return ( datetime.datetime.strptime( dateStr, '%Y-%m-%d' ) + \
-            datetime.timedelta( days=nDays ) ).strftime('%Y-%m-%d')
-
-
-def isMostRecentWeekday( dateStr: str ) -> bool:
-   '''
-   Returns whether the dateStr is equal to the most recent weekday.
-
-   TODO: Handle holidays?
-
-   Keyword arguments:
-      dateStr -- Date string the form 'YYYY-MM-DD'
-   '''
-   today = datetime.datetime.today()
-   todayStr = today.strftime( '%Y-%m-%d' )
-   return dateStr == todayStr \
-      or today.weekday() == 5 and dateStr == shiftDateStr( todayStr, -1 ) \
-      or today.weekday() == 6 and dateStr == shiftDateStr( todayStr, -2 )
 
 
 ##################
 # FUNCTIONS
 ##################
-
-def getTickerList( tickerListPath: str ) -> list[str]:
-   '''
-   Read list of ticker symbols from text file.
-
-   Keyword arguments:
-      stockListPath -- Path to the list of tickers
-   '''
-   with open( tickerListPath, 'r' ) as f:
-      tickers = f.readlines()
-   tickers = [ t.strip() for t in tickers ]
-   return tickers
-   
 
 def getDailyPriceCsv( ticker: str, dest: str = '' ) -> int:
    '''
@@ -101,13 +58,13 @@ def getDailyPriceCsvFast( ticker: str, dest: str = '' ) -> int:
       getDailyPriceCsv( ticker, dest )
       return 0
 
-   if isMostRecentWeekday( lastDateInExistingCsv ):
+   if Util.isMostRecentWeekday( lastDateInExistingCsv ):
       print( "Daily price data for %s is already up-to-date" % ticker )
       return 0
 
    # Fetch Yahoo Finance data into a Python DataFrame, starting
    # from the date after the last date in our existing CSV.
-   startDate = shiftDateStr( lastDateInExistingCsv, 1 )
+   startDate = Util.shiftDateStr( lastDateInExistingCsv, 1 )
    try:
       print( "Updating daily price data for %s" % ticker )
       df = yf.Ticker( ticker ).history( start=startDate )
@@ -152,7 +109,7 @@ def getYahooFinanceInfoDict( ticker: str, dest: str = '' ) -> int:
       dest = './%s.json' % ticker
 
    with open( dest, 'w' ) as f:
-      f.write( json.dumps( infoDict.info, indent=4, sort_keys=True ) )
+      f.write( json.dumps( infoDict, indent=4, sort_keys=True ) )
    return 0
 
 
