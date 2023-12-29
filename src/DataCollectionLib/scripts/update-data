@@ -50,8 +50,8 @@ def fetchData( tickerList: list[str] ) -> None:
       RawDataUtil.getDailyPriceCsv( ticker, csvDest )
       RawDataUtil.getDividendsCsv( ticker, dividendDest )
       RawDataUtil.getYahooFinanceFastInfo( ticker, fastJsonDest )
-      #jsonDest = jsonDestDir + '/%s.json' % ticker
-      #RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
+      jsonDest = jsonDestDir + '/%s.json' % ticker
+      RawDataUtil.getYahooFinanceInfoDict( ticker, jsonDest )
 
 # partitionedList = np.array_split( np.array( tickers ), NUM_PROCESSES )
 # processes = []

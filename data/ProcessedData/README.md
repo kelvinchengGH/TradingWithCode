@@ -1,0 +1,2 @@
+The ProcessedData directory is for caching files containing processed data.
+   - For example: In some applications, I might only need the closing price history, in which case having CSVs that exclude the Open, High, and Low columns can save me time.

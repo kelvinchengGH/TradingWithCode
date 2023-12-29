@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/env bash
 
-# Set up and activate Python3 virtual environment.
+# Set up and activate the Python3 virtual environment.
 python3 -m venv .venv
 source .venv/bin/activate
 
