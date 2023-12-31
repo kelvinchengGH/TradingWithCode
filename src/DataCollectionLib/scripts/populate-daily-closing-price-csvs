@@ -1,0 +1,52 @@
+#!/usr/bin/env python
+
+r"""
+In some applications, we may only care about the closing price history,
+in which case it can save time and memory to have CSVs available that only contain
+dates and closing prices.
+
+This script lets us 
+
+Usage: 
+   ./generate-daily-closing-price-csvs
+"""
+
+import os
+import pandas as pd
+
+from UtilLib.Util import absolutePathLocator
+
+
+RAW_CSV_DIR = absolutePathLocator( 'data/RawData/DailyPriceCsvs' )
+DEST_DIR = absolutePathLocator( 'data/ProcessedData/DailyClosingPriceCsvs' )
+
+
+def generateDailyClosingPriceCsv( ticker: str ) -> None:
+    # Read the raw CSV into a DataFrame, and keep only the Date and Close columns.
+    rawCsvPath = RAW_CSV_DIR + '/%s.csv' % ticker
+    df = pd.read_csv( rawCsvPath )
+    df = df[ [ 'Date', 'Close' ] ]
+
+    # Forget the full timestamp; keep only the date.
+    df[ 'Date' ] = df[ 'Date' ].apply( lambda dateStr: dateStr[:10] )
+
+    # Round to the nearest cent.
+    df[ 'Close' ] = df[ 'Close' ].apply( lambda price: "%.2f" % price ) 
+
+    # Write the condensed data into a new CSV.
+    newCsvPath = DEST_DIR +  '/%s.csv' % ticker
+    df.to_csv( newCsvPath, index=False )
+
+def main() -> None:
+    '''
+    Created Daily Closing Price CSVs for each ticker
+    whose raw data is available.
+    '''
+    csvList = os.listdir( RAW_CSV_DIR )
+    tickers = [ filename[:-4] for filename in csvList if filename.endswith( '.csv' ) ]
+    for ticker in tickers:
+        generateDailyClosingPriceCsv( ticker )
+
+
+if __name__ == '__main__':
+    main()
