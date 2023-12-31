@@ -2,7 +2,7 @@
 
 
 """
-A script to run smaller scrips to update all my data to the latest.
+A script to run smaller scripts to update all my data to the latest.
 """
 
 
@@ -14,8 +14,8 @@ def runScript( cmd ):
     os.system( cmd )
 
 
-runScript( './src/DataCollectionLib/scripts/update-data' )
-runScript( './data/ProcessedData/DailyClosingPriceCsvs/populate.py' )
+runScript( './src/DataCollectionLib/scripts/update-yahoo-finance-data' )
+runScript( './src/DataCollectionLib/scripts/populate-daily-closing-price-csvs' )
 runScript( './src/WebDashboardLib/create-html.py' )
 
 
