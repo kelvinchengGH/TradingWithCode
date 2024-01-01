@@ -4,7 +4,7 @@
 # Imports
 ############
 
-from typing import Callable
+from typing import Optional
 
 import os, datetime, json
 from functools import cached_property
@@ -261,6 +261,24 @@ class Stock:
     def ytdReturn( self ) -> float:
         # TODO: Fill me in
         return 0
+
+    ##### Moving Averages #####
+    def nDayMovingAverageDf( self, n : int ) -> DataFrame:
+        '''
+        Returns a DataFrame tracking the n-day moving average.
+        '''
+        dfMa = self.maxHistoryDf.rolling( n ).mean()
+        dfMa = dfMa.rename( columns={ 'Close' : '%dd MA' % n } )
+        return dfMa
+
+    def nDayMovingAverage( self, n : int ) -> Optional[float]:
+        if len( self.maxHistoryDf ) < n:
+            # Can't have an n-day moving average if the history isn't long enough.
+            return None
+        dfMa = self.nDayMovingAverageDf( n )
+        columnName = '%dd MA' % n
+        return dfMa[ columnName ].iloc[-1]
+
 
 ############
 # main()
