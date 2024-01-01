@@ -145,14 +145,18 @@ class Stock:
         since we can't access it now, we just return an estimate of the PE ratio
         using the most recent full year's EPS.
         '''
-        try:
-            df = self.financialsDf
-            mostRecentYearsEarnings = df.iloc[ -1 ][ 'eps-earnings-per-share-diluted' ]
-            if mostRecentYearsEarnings <= 0:
-                return -1
-            return self.lastClosingPrice / mostRecentYearsEarnings
-        except:
-            return -1
+        return self.info[ 'forwardPE' ]
+
+        # For a time, Yahoo! Finance didn't let me get the forward PE,
+        # so I was using the workaround below. I'm leaving it for now as a comment.
+        # try:
+        #     df = self.financialsDf
+        #     mostRecentYearsEarnings = df.iloc[ -1 ][ 'eps-earnings-per-share-diluted' ]
+        #     if mostRecentYearsEarnings <= 0:
+        #         return -1
+        #     return self.lastClosingPrice / mostRecentYearsEarnings
+        # except:
+        #     return -1
 
     @cached_property
     def dividends( self ) -> DataFrame:
@@ -194,15 +198,17 @@ class Stock:
 
     @property
     def dividendYield( self ) -> float:
-        # Need to manually compute the dividendYield because
-        # yfinance's "info" feature is blocked.
-        # res = self.info[ 'dividendYield' ]
-        # return res * 100 if res else 0
-        return 100.0 * self.oneYearDividendTotal / self.lastClosingPrice
+        # Assume that if the key doesn't exist, the value is zero.
+        return self.info.get( 'dividendYield', 0 )
+
+        # If the info dict is not accessible or not working,
+        # one can try using this approximate workaround.
+        # return 100.0 * self.oneYearDividendTotal / self.lastClosingPrice
 
     @property
     def shortPercentOfFloat( self ) -> float:
-        return self.info[ 'shortPercentOfFloat' ]
+        # Assume that if the key doesn't exist, the value is zero.
+        return self.info.get( 'shortPercentOfFloat', 0 )
 
     @property
     def sector( self ) -> str:

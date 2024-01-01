@@ -41,15 +41,15 @@ class Screener:
     columnTitleToCodeLineMap = {
         "LongName" : "stock.longName",
         "Sector" : "stock.sector",
-        "DividendYield" : "stock.dividendYield",
         "AllTimeHigh" : "stock.allTimeHigh",
         "PctFrom52WkHigh" : "stock.pctFromNDayHigh( 252 )",
         "LastClosingPrice": "stock.lastClosingPrice",
-        "DividendYield" : "stock.dividendYield",
+        "DividendYield" : "stock.dividendYield * 100.0",
         "ForwardPE" : "stock.forwardPE",
         "1DayPctReturn" : "stock.nDayReturn( 1 )",
         "5DayPctReturn" : "stock.nDayReturn( 5 )",
         "MarketCap" : "'%.2e' % stock.marketCap",
+        "ShortPercentOfFloat" : "stock.shortPercentOfFloat * 100.0"
     }
 
     @property
