@@ -98,8 +98,8 @@ def main() -> None:
 
     if failedTests:
         print( "*** The following tests failed:" )
-        for test in failedTests:
-            print( "   " + test )
+        for testName in failedTests:
+            print( "   " + testName)
     else:
         print( "*** ALL TESTS PASSED!" )
    

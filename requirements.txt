@@ -6,6 +6,7 @@ pandas
 pandas-stubs
 yfinance
 bs4
+types-beautifulsoup4
 mypy
 pylint
 selenium

@@ -1,13 +1,10 @@
 #!/usr/bin/env python
 
+
 from typing import Callable
 import os, subprocess
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Tag
 
-############
-# Constants
-############
-ROOT_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' ) )
 
 def getHtmlSoup( url: str ) -> BeautifulSoup:
     cmd = [ "curl", "-s", url ]
@@ -23,6 +20,7 @@ def getDividendAristocratList() -> list[str]:
     url = "https://en.wikipedia.org/wiki/S%26P_500_Dividend_Aristocrats"
     soup = getHtmlSoup( url )
     table = soup.find( 'table' )
+    assert isinstance( table, Tag ) # Reassure mypy that table.find_all exists.
     rows = table.find_all( 'tr' )
     for row in rows[ 1: ]: # Skip the header
         ticker = row.find_all( 'td' )[ 1 ].text
@@ -38,6 +36,7 @@ def getSp500List() -> list[str]:
     url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
     soup = getHtmlSoup( url )
     table = soup.find( 'table' )
+    assert isinstance( table, Tag ) # Reassure mypy that table.find_all exists.
     rows = table.find_all( 'tr' )
     for row in rows[ 1: ]: # Skip the header
         ticker = row.find_all( 'td' )[ 0 ].text.strip()
