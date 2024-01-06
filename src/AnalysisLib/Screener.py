@@ -68,7 +68,7 @@ class Screener:
                     "ForwardPE",
         ]
 
-        data = { c : [] for c in columns }
+        data: dict[str, list] = { c : [] for c in columns }
         tickers = []
 
         for stock in self.stocks:

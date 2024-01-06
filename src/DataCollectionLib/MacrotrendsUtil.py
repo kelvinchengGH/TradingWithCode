@@ -119,11 +119,11 @@ def getAnnualData( ticker: str, metric: str ) -> dict[int, float]:
    for row in tableRows[ 1: ]:
       cells = row.find_all( 'td' )
       year = int( cells[ 0 ].text )
-      value = re.sub( "[^0-9-\.]", "", cells[ 1 ].text )
+      valueStr = re.sub( "[^0-9-.]", "", cells[ 1 ].text )
 
       # Sometimes the cell just contains "$", with no digits. In that case,
       # default to 0.
-      value = float( value ) if value else 0
+      value = float( valueStr ) if valueStr else 0
 
       if multiplyByOneMillion:
          value = value * 1000000
@@ -156,8 +156,8 @@ def dumpAnnualData( ticker: str,
    for year in sorted( yearToValueMap.keys() ):
       value = yearToValueMap[ year ]
       if useCurrencyFormat:
-         value = "${:,.2f}".format( value )
-         print( "%d\t%s" % ( year, value ) )
+         valueStr = "${:,.2f}".format( value )
+         print( "%d\t%s" % ( year, valueStr ) )
       else:
          print( "%d\t%.2f" % ( year, value ) )
    
@@ -185,7 +185,7 @@ def getDataFrame( tickers: list[str], metrics: list[str] ) -> DataFrame:
    tickerToAnnualDataMap = {}
 
    for ticker in tickers:
-      yearToDataMap = {}
+      yearToDataMap: dict[int, dict[str, float]] = {}
 
       for metric in metrics:
          try:
@@ -209,7 +209,6 @@ def getDataFrame( tickers: list[str], metrics: list[str] ) -> DataFrame:
       for year in sorted( yearToDataMap.keys() ):
          row = [ year, ticker ]
          for metric in metrics:
-            value = getattr( yearToDataMap[ year ], metric, 'NaN' )
             row.append( yearToDataMap[ year ][ metric ] )
          rowList.append( row )
    
@@ -239,7 +238,7 @@ def getFinancialsCsv( ticker: str, dest: str = '' ) -> int:
 #################
 def main() -> None:
    parser = argparse.ArgumentParser()
-   parser.add_argument( '-t', '--tickers', nargs='+', default=[],
+   parser.add_argument( '-t', '--tickers', nargs='+', default=[], required=True,
                         help="List of ticker symbols separated by spaces." )
    parser.add_argument( '-c', dest='useCurrencyFormat',
                         action='store_true',

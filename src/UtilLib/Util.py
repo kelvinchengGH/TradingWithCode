@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 
-import os, time
+
+r"""
+Useful helper functions
+"""
+
+import os, time, datetime
 import requests
 from selenium import webdriver
 
