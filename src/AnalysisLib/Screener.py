@@ -52,7 +52,7 @@ class Screener:
         "ShortPercentOfFloat" : "stock.shortPercentOfFloat * 100.0"
     }
 
-    @property
+    @cached_property
     def df( self ) -> DataFrame:
         # Edit the columns list with the stuff you want to include.
         # Make sure columnTitleToCodeLineMap supports each column.

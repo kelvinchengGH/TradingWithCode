@@ -21,8 +21,7 @@ Tools for scraping and parsing data from Macrotrends.
 ################
 ##### IMPORTS
 ################
-import os, re
-import argparse
+import re, argparse
 
 from bs4 import BeautifulSoup
 

@@ -5,7 +5,7 @@ r"""
 Useful helper functions
 """
 
-import os, time, datetime
+import os, datetime
 import requests
 from selenium import webdriver
 
