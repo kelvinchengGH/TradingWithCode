@@ -4,11 +4,10 @@
 ##################
 # IMPORTS
 ##################
-import yfinance as yf
+import os, subprocess, json
+
 import pandas as pd
-import datetime
-import os, subprocess
-import json
+import yfinance as yf
 
 from UtilLib import Util
 

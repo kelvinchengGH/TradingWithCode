@@ -2,7 +2,7 @@
 
 
 from typing import Callable
-import os, subprocess
+import subprocess
 from bs4 import BeautifulSoup, Tag
 
 

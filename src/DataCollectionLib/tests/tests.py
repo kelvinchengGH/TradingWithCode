@@ -37,8 +37,8 @@ def testYfinance() -> None:
 def testMacrotrendsUtil() -> None:
     ticker = 'AAPL'
     metric = 'net-income'
-    html = MacrotrendsUtil.getPageSource( ticker, metric )
-    dataDict = MacrotrendsUtil.getAnnualData( ticker, metric )
+    _ = MacrotrendsUtil.getPageSource( ticker, metric )
+    _ = MacrotrendsUtil.getAnnualData( ticker, metric )
 
     tickers = [ 'AAPL', 'GOOG' ]
     metrics = [ 'net-income', 'revenue' ]

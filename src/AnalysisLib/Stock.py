@@ -6,7 +6,7 @@
 
 from typing import Optional
 
-import os, datetime, json
+import datetime, json
 from functools import cached_property
 
 import pandas as pd
