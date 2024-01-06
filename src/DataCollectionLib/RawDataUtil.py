@@ -21,13 +21,13 @@ from UtilLib import Util
 def getDailyPriceCsv( ticker: str, dest: str = '' ) -> int:
    '''
    Get daily price info for a stock in csv format.
-   
+
    Keyword arguments:
       ticker -- The ticker symbol
       dest   -- Path to the directory where we want the CSV file
    '''
 
-   # Fetch Yahoo Finance data into a Python DataFrame 
+   # Fetch Yahoo Finance data into a Python DataFrame
    try:
       print( "Getting daily price data for %s" % ticker )
       df = yf.Ticker( ticker ).history( period='max' )
@@ -157,7 +157,7 @@ def getQuarterlyFinancialCsv( stock: str, destDir: str ) -> None:
    ''' Get quarterly financial info for a stock into a csv file '''
 
    # Work in-progress
-   
+
    csvFile = '%s_quarterly_financial_data.csv' % stock
    url = 'http://www.stockpup.com/data/%s' % csvFile
    try:

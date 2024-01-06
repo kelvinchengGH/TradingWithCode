@@ -21,7 +21,7 @@
 # jsonBaseDir = '../../data/RawData/YahooFinanceInfo'
 # def symbolToJsonPath( symbol: str, baseDir: str = jsonBaseDir ) -> str:
 #     return os.path.join(baseDir, "{}.json".format(str(symbol)))
-    
+
 
 # def getDailyStockPrices( symbols: list[str], date: Optional[DatetimeIndex] = None ) -> DataFrame:
 #     """
@@ -41,7 +41,7 @@
 #        dates = pd.date_range( startDate, endDate )
 #        symbols = [ 'AAPL', 'MSFT' ]
 #        getDailyStockPrices( symbols, dates )
-#     """    
+#     """
 #     # Use the SPY as a reference for which trading days to include.
 #     dropSpy = False
 #     if 'SPY' not in symbols:
@@ -54,7 +54,7 @@
 #         dates = pd.date_range( startDate, endDate )
 
 #     df = pd.DataFrame( index=dates )
-        
+
 #     for symbol in symbols:
 #         path = symbolToCsvPath( symbol )
 #         df_temp = pd.read_csv( path, index_col='Date', parse_dates=True,
@@ -75,7 +75,7 @@
 #         infoDict = json.load( f )
 #     return infoDict
 
-# ### Plot data ### 
+# ### Plot data ###
 # def plotData( df: DataFrame,
 #               title: str = 'Stock Prices',
 #               xlabel: str = 'Date',
@@ -87,9 +87,9 @@
 #     ax.set_ylabel( ylabel )
 #     ax.grid()
 #     plt.show()
-    
+
 # def plotHist( df: DataFrame ) -> None:
-#     ''' 
+#     '''
 #     Plot overlapping historgrams.
 #     This is useful for looking at the distribution of daily returns.
 #     '''
@@ -112,7 +112,7 @@
 
 
 # def movingAverage( df: DataFrame, window ):
-#     ''' 
+#     '''
 #     df is a table of daily stock prices.
 #     Returns a table of "window"-day moving averages for each stock in df.
 #     '''
@@ -129,13 +129,13 @@
 #         symbol: str,
 #         windows: list[int] = [ 20, 50, 200 ]
 # ) -> DataFrame:
-#     ''' 
+#     '''
 #     From a DataFrame with daily price data for one or more stocks,
 #     choose one of the stocks and compute one or more moving averages.
 #     '''
 #     result = df[ [symbol ] ]
 #     for window in windows:
-#         df1 = df[ [ symbol ] ]        
+#         df1 = df[ [ symbol ] ]
 #         ma = movingAverage( df1, window )
 #         ma = ma.rename( columns={ symbol : '%d-day MA' % window } )
 #         result = result.join( ma )
