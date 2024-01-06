@@ -15,7 +15,7 @@ BASE_DIR = os.path.realpath( os.path.join( os.path.dirname( __file__ ), '../..' 
 
 
 def absolutePathLocator( relativePath: str ) -> str:
-    return os.path.normpath(os.path.join(BASE_DIR, relativePath)) 
+    return os.path.normpath(os.path.join(BASE_DIR, relativePath))
 
 
 def shiftDateStr( dateStr: str, nDays: int ) -> str:

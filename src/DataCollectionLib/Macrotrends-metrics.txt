@@ -1,6 +1,6 @@
 ########################################################################
 # A list of metrics you can fetch from Macrotrends.
-# 
+#
 # Exmaple URL:
 #   https://www.macrotrends.net/stocks/charts/JPM/jpmorgan-chase/net-income
 #

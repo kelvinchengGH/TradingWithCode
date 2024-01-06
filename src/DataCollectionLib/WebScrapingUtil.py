@@ -61,7 +61,7 @@ def getNasdaq100List() -> list[str]:
 
 def getDowJonesList() -> list[str]:
     '''
-    Return a list of tickers for the stocks in the 
+    Return a list of tickers for the stocks in the
     Dow Jones Industrial Average.
     '''
     result = []
@@ -96,7 +96,7 @@ def main() -> None:
     for func in funcs:
         testFunc( func )
 
-    
+
 
 if __name__ == '__main__':
     main()

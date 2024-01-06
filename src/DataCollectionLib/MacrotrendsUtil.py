@@ -93,7 +93,7 @@ def getAnnualData( ticker: str, metric: str ) -> dict[int, float]:
       >>> dataDict = MacrotrendsUtil.getAnnualData( 'JPM', 'net-income' )
       >>> for year in sorted( dataDict.keys() ):
       ...    year, dataDict[ year ]
-      ... 
+      ...
       (2005, 8470000000.0)
       (2006, 14440000000.0)
       (2007, 14924000000.0)
@@ -144,7 +144,7 @@ def dumpAnnualData( ticker: str,
       ticker - ticker symbol of the comapny.
       metric - financial metric of interest, with dashes separating each word.
       useCurrencyFormat - Use currency format, e.g., "$420,666.69".
-   
+
    Example:
       >>> MacrotrendsUtil.dumpAnnualData( 'GOOG', 'net-income' )
       2005	1465000000.00
@@ -160,7 +160,7 @@ def dumpAnnualData( ticker: str,
          print( "%d\t%s" % ( year, valueStr ) )
       else:
          print( "%d\t%.2f" % ( year, value ) )
-   
+
 def getDataFrame( tickers: list[str], metrics: list[str] ) -> DataFrame:
    '''
    Given a list of tickers and a list of metrics, create a DataFrame
@@ -211,7 +211,7 @@ def getDataFrame( tickers: list[str], metrics: list[str] ) -> DataFrame:
          for metric in metrics:
             row.append( yearToDataMap[ year ][ metric ] )
          rowList.append( row )
-   
+
    df = pd.DataFrame( rowList, columns=columnNames )
    return df
 
@@ -254,7 +254,7 @@ def main() -> None:
          try:
             dumpAnnualData( ticker, metric,
                             useCurrencyFormat=args.useCurrencyFormat )
-            print()            
+            print()
          except Exception as e:
             print( "[ERROR] Failed to get data for %s %s: %s" % \
                ( ticker,

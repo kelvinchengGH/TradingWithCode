@@ -27,7 +27,7 @@ def testYfinance() -> None:
     print( '%s Dividend History:' % ticker )
     print( dividendDf[-4:] )
     print()
-    
+
     df = yfTicker.history( period='1wk' )
     print( '%s 1-Week Price History:' % ticker )
     print( df )
@@ -39,12 +39,12 @@ def testMacrotrendsUtil() -> None:
     metric = 'net-income'
     html = MacrotrendsUtil.getPageSource( ticker, metric )
     dataDict = MacrotrendsUtil.getAnnualData( ticker, metric )
-    
+
     tickers = [ 'AAPL', 'GOOG' ]
     metrics = [ 'net-income', 'revenue' ]
     df = MacrotrendsUtil.getDataFrame( tickers, metrics )
     print( df.head() )
-    
+
 
 def testGetDailyPriceCsv() -> None:
     ticker = 'MSFT'
@@ -66,11 +66,11 @@ def testGetYahooFinanceInfoDict() -> None:
 
     numKeys = 4
     truncatedInfo = { k: info[k] for k in list(info.keys())[:numKeys] }
-    print( "Truncated %s Info Read From JSON:" % ticker ) 
+    print( "Truncated %s Info Read From JSON:" % ticker )
     print( json.dumps( truncatedInfo, indent=4 ) )
     print()
     os.system( 'rm %s' % jsonFile )
-    
+
 
 
 def main() -> None:
@@ -80,9 +80,9 @@ def main() -> None:
         testGetYahooFinanceInfoDict,
 
         # TODO: Uncomment this once I've got it working reliably and efficiently.
-        # testMacrotrendsUtil 
+        # testMacrotrendsUtil
     ]
-    
+
     failedTests = []
     for test in testList:
         testName = test.__name__
@@ -102,7 +102,7 @@ def main() -> None:
             print( "   " + testName)
     else:
         print( "*** ALL TESTS PASSED!" )
-   
+
 
 if __name__ == '__main__':
     main()

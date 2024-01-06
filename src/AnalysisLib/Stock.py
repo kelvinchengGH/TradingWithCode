@@ -78,9 +78,9 @@ class History:
 class Stock:
     def __init__( self, ticker: str, useLiveStatus: bool = False ) -> None:
         """
-        useLiveStatus specifies if you want to fetch the latest data 
+        useLiveStatus specifies if you want to fetch the latest data
         using Yahoo! Finance.
-           - I make it False by default because fetching the latest data 
+           - I make it False by default because fetching the latest data
              this way can be slow.
         """
         self.ticker = ticker
@@ -213,7 +213,7 @@ class Stock:
     @property
     def sector( self ) -> str:
         return self.info[ 'sector' ]
-    
+
     ##### Basic Price Metrics #####
     @property
     def allTimeHigh( self ) -> float:
@@ -230,7 +230,7 @@ class Stock:
     @property
     def pctFromAllTimeHigh( self ) -> float:
         return 100 * ( self.lastClosingPrice - self.allTimeHigh ) / self.allTimeHigh
-    
+
     ##### Intermediate Price Metrics #####
     def nDayHigh( self, n: int ) -> float:
         idx = -1 * n
